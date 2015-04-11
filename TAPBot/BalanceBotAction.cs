@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace TAPBot
 {
-    class BalanceBotAction : ChatMsgBotAction
+    class BalanceBotAction : ChatBotAction
     {
         public BalanceBotAction(string friendId, string chatId) 
             : base(friendId, chatId)

@@ -9,22 +9,26 @@ using System.Text.RegularExpressions;
 
 namespace TAPBot
 {
-    class MilkshakeAction : ChatMsgBotAction {
+    class MilkshakeAction {
         
         protected int milkshakes;
+        protected string results;
 
         public MilkshakeAction(string friendId, string chatId) 
-            : base(friendId, chatId)
         {
             milkshakes = 0;
+            results = "";
         }
 
-        public override void Execute()
+        public void Execute()
         {
             milkshakes++;
             results = "Milkshakes: " + milkshakes;
-            messageAvailable = true;
-            success = true;
+        }
+
+        public string GetMessage()
+        {
+            return results;
         }
     }
 }

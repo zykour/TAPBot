@@ -7,7 +7,7 @@ using SteamKit2;
 
 namespace TAPBot
 {
-    class BotAction
+    abstract class BotAction
     {
         protected string results;
         protected bool success;
@@ -20,70 +20,22 @@ namespace TAPBot
             messageAvailable = false;
         }
 
-        public virtual void SetFriendID(SteamID friendId)
-        {
-        }
+        public abstract void SetFriendID(SteamID friendId);
+        public abstract void SetFriendID(string friendId);
+        public abstract bool HasFriendID();
+        public abstract string GetFriendID();
+        public abstract SteamID GetFriendSteamID();
 
-        public virtual void SetFriendID(string friendId)
-        {
-        }
+        public abstract void SetGroupChatSteamID(SteamID groupId);
+        public abstract void SetGroupChatSteamID(string groupId);
+        public abstract bool HasGroupChatID();
+        public abstract string GetGroupChatID();
+        public abstract SteamID GetGroupChatSteamID();
 
-        public virtual bool HasFriendID()
-        {
-            return false;
-        }
+        public abstract string GetMessage();
+        public abstract bool IsSuccessful();
+        public abstract bool HasMessage();
 
-        public virtual string GetFriendID()
-        {
-            return null;
-        }
-
-        public virtual SteamID GetFriendSteamID()
-        {
-            return null;
-        }
-
-        public virtual void SetGroupChatSteamID(SteamID groupId)
-        {
-        }
-
-        public virtual void SetGroupChatSteamID(string groupId)
-        {
-        }
-
-        public virtual bool HasGroupChatID()
-        {
-            return false;
-        }
-
-        public virtual string GetGroupChatID()
-        {
-            return null;
-        }
-
-        public virtual SteamID GetGroupChatSteamID()
-        {
-            return null;
-        }
-
-        public override string ToString()
-        {
-            return results;
-        }
-
-        public bool IsSuccessful()
-        {
-            return success;
-        }
-
-        public bool HasMessage()
-        {
-            return messageAvailable;
-        }
-
-        public virtual void Execute()
-        {
-            //Console.WriteLine("Hello, from BotAction Execute!");
-        }
+        public abstract void Execute();
     }
 }

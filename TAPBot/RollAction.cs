@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace TAPBot
 {
-    class RollAction : ChatMsgBotAction
+    class RollAction : ChatBotAction
     {
 
         protected string msg;

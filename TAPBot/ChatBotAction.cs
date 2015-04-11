@@ -7,46 +7,30 @@ using SteamKit2;
 
 namespace TAPBot
 {
-    class ChatMsgBotAction : BotAction
+    class ChatBotAction : BotAction
     {
         protected string groupId;
         protected string friendId;
 
-        public ChatMsgBotAction(string friendId, string groupId)
+        public ChatBotAction(string friendId, string groupId) : base()
         {
             this.groupId = groupId;
             this.friendId = friendId;
         }
 
-        public ChatMsgBotAction(SteamID friendId, SteamID groupId)
+        public ChatBotAction(SteamID friendId, SteamID groupId) : base()
         {
             this.groupId = groupId.ToString();
             this.friendId = friendId.ToString();
         }
 
-        public ChatMsgBotAction(string friendId, string groupId, string msg)
+        public ChatBotAction(string friendId, string groupId, string msg)
         {
             this.groupId = groupId;
             this.friendId = friendId;
             results = msg;
             success = true;
             messageAvailable = true;
-        }
-
-        public ChatMsgBotAction(string friendId)
-        {
-            this.friendId = friendId;
-        }
-
-        public ChatMsgBotAction(SteamID friendId)
-        {
-            this.friendId = friendId.ToString();
-        }
-
-        public ChatMsgBotAction()
-        {
-            groupId = null;
-            friendId = null;
         }
 
         public override void SetFriendID(SteamID friendId)
@@ -97,6 +81,25 @@ namespace TAPBot
         public override SteamID GetGroupChatSteamID()
         {
             return new SteamID(UInt64.Parse(groupId));
+        }
+
+        public override string GetMessage()
+        {
+            return results;
+        }
+
+        public override bool IsSuccessful()
+        {
+            return success;
+        }
+
+        public override bool HasMessage()
+        {
+            return messageAvailable;
+        }
+
+        public override void Execute()
+        {
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace TAPBot
 {
-    class DailyDealAction : ChatMsgBotAction {
+    class DailyDealAction {
         
         protected bool hasRanToday;
         protected DateTime currentDate; // represents the date when this was last called
@@ -18,9 +18,9 @@ namespace TAPBot
         protected int gamePrice;
         protected int discountAmnt;
         protected int reroll;
+        protected string results;
 
         public DailyDealAction(string friendId, string chatId) 
-            : base(friendId, chatId)
         {
             hasRanToday = false;
             currentDate = DateTime.Today;
@@ -29,10 +29,11 @@ namespace TAPBot
             gamePrice = 0;
             discountAmnt = 0;
             reroll = 1;
+            results = "";
         }
 
         
-        public override void Execute()
+        public void Execute()
         {
             if (DateTime.Compare(DateTime.Today, currentDate) != 0)
             {
@@ -51,8 +52,11 @@ namespace TAPBot
             string fixedPrice = (gamePrice == 1) ? " point (" : " points (";
 
             results = "The Co-op Shop Special of the Day is \"" + gameName + ".\" The discounted price is " + gamePrice + fixedPrice + discountAmnt + "%), currently " + gameQuantity + fixedQuantity;
-            messageAvailable = true;
-            success = true;
+        }
+
+        public String GetMessage()
+        {
+            return results;
         }
 
         public void Reroll()
