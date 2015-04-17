@@ -14,13 +14,14 @@ namespace TAPBot
         protected bool hasRanToday;
         protected DateTime currentDate; // represents the date when this was last called
         protected string gameName;
+        protected string gameId;        // represents the Steam AppID for this game, if present
         protected int gameQuantity;
         protected int gamePrice;
         protected int discountAmnt;
         protected int reroll;
         protected string results;
 
-        public DailyDealAction(string friendId, string chatId) 
+        public DailyDealAction() 
         {
             hasRanToday = false;
             currentDate = DateTime.Today;
@@ -30,6 +31,7 @@ namespace TAPBot
             discountAmnt = 0;
             reroll = 1;
             results = "";
+            gameId = "";
         }
 
         
@@ -43,6 +45,7 @@ namespace TAPBot
 
             if (!hasRanToday)
             {
+                gameId = "";    // not every item in the shop may have an AppID associated to it, so this may not get overwritten, thus set it to an empty string
                 firstTime();
                 currentDate = DateTime.Today;
                 hasRanToday = true;
@@ -51,7 +54,13 @@ namespace TAPBot
             string fixedQuantity = (gameQuantity == 1) ? " copy remains." : " copies remain.";
             string fixedPrice = (gamePrice == 1) ? " point (" : " points (";
 
-            results = "The Co-op Shop Special of the Day is \"" + gameName + ".\" The discounted price is " + gamePrice + fixedPrice + discountAmnt + "%), currently " + gameQuantity + fixedQuantity;
+            //results = "The Co-op Shop Special of the Day is \"" + gameName + ".\" The discounted price is " + gamePrice + fixedPrice + discountAmnt + "%), currently " + gameQuantity + fixedQuantity;
+            results = "Daily deal: '" + gameName + "' for " + gamePrice + fixedPrice + discountAmnt + "%), currently " + gameQuantity + fixedQuantity;
+
+            if ( gameId.CompareTo("") != 0 )
+            {
+                results = results + " ( " + gameId + " )";
+            }
         }
 
         public String GetMessage()
@@ -59,13 +68,16 @@ namespace TAPBot
             return results;
         }
 
+        // Used to change the daily deal. Daily deal is selected by the day's current date as a seed for the random number generator multiplied by the reroll factor (1 by default)
+        // thus by adding 1 to the reroll factor each time this is called, we'll get a new deal
         public void Reroll()
         {
             reroll++;
             hasRanToday = false;
         }
 
-        public void InventoryChange()
+        // if we want to reset the daily deal
+        public void Reset()
         {
             reroll = 1;
             hasRanToday = false;
@@ -75,7 +87,7 @@ namespace TAPBot
         {
             
             // General format for inventory entry is: #     #      Name
-            Regex inventoryCmd = new Regex(@"([0-9]+)\s+([0-9]+)\s+(.*)");
+            Regex inventoryCmd = new Regex(@"([0-9]+)\s+([0-9]+)\s+([^\t]+)(\t)?(.+)?");
 
             try
             {
@@ -107,7 +119,8 @@ namespace TAPBot
                     sr.Close();
 
                     int day = Convert.ToInt32((DateTime.Today - new DateTime(2010, 1, 1)).TotalDays);
-                    Random randomGen = new Random(day + numLines * reroll);
+                    //Random randomGen = new Random((day + numLines * Convert.ToInt32(DateTime.Today.Day)) * reroll);
+                    Random randomGen = new Random(day * reroll);
                     int dealNumber = randomGen.Next(1, steamItems.Count() + 1);
 
                     line = steamItems.ElementAt(dealNumber);
@@ -120,6 +133,10 @@ namespace TAPBot
                         gameQuantity = Int32.Parse(match.Groups[1].ToString().Trim());
                         gameName = match.Groups[3].ToString();
                         originalPrice = Int32.Parse(match.Groups[2].ToString().Trim());
+                        if ( match.Groups[5].Success )
+                        {
+                            gameId = match.Groups[5].ToString();
+                        }
                     }
 
                     int discountNum = randomGen.Next(1, 36);

@@ -138,11 +138,7 @@ namespace TAPBot
                 // Attempt to log back on
 
                 System.Threading.Thread.Sleep(5000);
-                steamUser.LogOn(new SteamUser.LogOnDetails
-                {
-                    Username = username,
-                    Password = password,
-                });
+                steamClient.Disconnect();
 
                 return;
             }

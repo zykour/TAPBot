@@ -74,6 +74,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueenBotAction.cs" />
     <Compile Include="RollAction.cs" />
+    <Compile Include="SpinAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

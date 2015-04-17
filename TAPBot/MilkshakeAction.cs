@@ -14,7 +14,7 @@ namespace TAPBot
         protected int milkshakes;
         protected string results;
 
-        public MilkshakeAction(string friendId, string chatId) 
+        public MilkshakeAction() 
         {
             milkshakes = 0;
             results = "";

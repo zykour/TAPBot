@@ -20,8 +20,8 @@ namespace TAPBot
 
         public CommandFactory()
         {
-            dailyDeal = new DailyDealAction(null, null);
-            milkshakes = new MilkshakeAction(null, null);
+            dailyDeal = new DailyDealAction();
+            milkshakes = new MilkshakeAction();
         }
 
         public BotAction CreateBotAction(string command, string userId, string chatId)
@@ -67,7 +67,7 @@ namespace TAPBot
                     BotAction temp;
                     if (userId.CompareTo("76561198030277114") == 0)
                     {
-                        dailyDeal.InventoryChange();
+                        dailyDeal.Reset();
                         temp = new ChatBotAction(userId, chatId, "Reset successful, master!");
                     }
                     else
@@ -78,7 +78,24 @@ namespace TAPBot
                     return temp;
                 }
             }
+            if (command.Trim().StartsWith("!spin ") && command.Trim().Length > 6)
+            {
+                int numDeals = 1;
 
+                try
+                {
+                    numDeals = Convert.ToInt32(command.Trim().Substring(6));
+                }
+                catch ( Exception e )
+                {
+                    if ( e is OverflowException || e is FormatException )
+                    {
+                        return new SpinAction(userId, chatId, 1);
+                    }
+                }
+
+                return new SpinAction(userId, chatId, numDeals);
+            }
             return null;
         }
     }
