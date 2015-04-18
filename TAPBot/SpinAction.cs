@@ -32,7 +32,7 @@ namespace TAPBot
 
         public override void Execute()
         {
-            Regex inventoryCmd = new Regex(@"([0-9]+)\s+([0-9]+)\s+([^\t]+)(\t)?(.+)?");
+            Regex inventoryCmd = new Regex(@"([0-9]+)\s+([0-9]+)\s+([^\t]+)(\t)*(.+)?");
             LinkedList<string> steamItems = new LinkedList<string>();
             string line = "";
 

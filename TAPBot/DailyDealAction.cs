@@ -87,7 +87,7 @@ namespace TAPBot
         {
             
             // General format for inventory entry is: #     #      Name
-            Regex inventoryCmd = new Regex(@"([0-9]+)\s+([0-9]+)\s+([^\t]+)(\t)?(.+)?");
+            Regex inventoryCmd = new Regex(@"([0-9]+)\s+([0-9]+)\s+([^\t]+)(\t)*(.+)?");
 
             try
             {
