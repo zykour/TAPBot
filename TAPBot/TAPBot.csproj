@@ -67,6 +67,7 @@
     <Compile Include="ChatBotAction.cs" />
     <Compile Include="DailyDealAction.cs" />
     <Compile Include="CommandFactory.cs" />
+    <Compile Include="DealPicker.cs" />
     <Compile Include="Friend.cs" />
     <Compile Include="GroupChat.cs" />
     <Compile Include="MilkshakeAction.cs" />
