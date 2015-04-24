@@ -203,7 +203,7 @@ namespace TAPBot
         static void JoinChat(string msg)
         {
             Regex joinCmd = new Regex(@"(!join)(\s+)(.+)");
-            Regex validSteamURL = new Regex(@"(http://)?(www\.)?(steamcommunity.com/groups/)([a-zA-Z0-9_]+)");
+            Regex validSteamURL = new Regex(@"(http://)?(www\.)?(steamcommunity\.com/groups/)([a-zA-Z0-9_]+)");
             Match match = joinCmd.Match(msg);
             Match urlMatch;
 

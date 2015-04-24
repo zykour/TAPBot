@@ -12,6 +12,11 @@ namespace TAPBot
         protected DateTime currentDate; // represents the date when this was last called
         protected int reroll;
         protected string results;
+        protected DealEntry de;
+        public DealEntry Deal
+        {
+            get { return de; }
+        }
 
         public DailyDealAction() 
         {
@@ -50,6 +55,8 @@ namespace TAPBot
                 {
                     results = results + " " + dp.GetAppID();
                 }
+
+                de = dp.Data;
             }
         }
 

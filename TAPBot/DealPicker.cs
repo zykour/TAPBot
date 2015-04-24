@@ -20,8 +20,13 @@ namespace TAPBot
         private int discountAmnt;
         private int gameQuantity;
         private int reroll;
-        LinkedList<string> steamItems;
-        Regex inventoryCmd;
+        private LinkedList<string> steamItems;
+        private Regex inventoryCmd;
+        private DealEntry dealEntry;
+        public DealEntry Data
+        {
+            get { return dealEntry; }
+        }
 
         public DealPicker(int seed)
         {
@@ -98,6 +103,13 @@ namespace TAPBot
             {
                 discountPrice = 1;
             }
+
+            dealEntry = new DealEntry();
+            dealEntry.AppID = appId;
+            dealEntry.Quantity = gameQuantity;
+            dealEntry.Price = discountPrice;
+            dealEntry.Name = gameName;
+            dealEntry.Expiration = DateTime.Today;
         }
 
         public void Initialize()

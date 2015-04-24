@@ -63,19 +63,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BalanceBotAction.cs" />
+    <Compile Include="BinaryTree.cs" />
+    <Compile Include="BinaryTreeNode.cs" />
     <Compile Include="BotAction.cs" />
     <Compile Include="ChatBotAction.cs" />
     <Compile Include="DailyDealAction.cs" />
     <Compile Include="CommandFactory.cs" />
+    <Compile Include="DealEntry.cs" />
     <Compile Include="DealPicker.cs" />
     <Compile Include="Friend.cs" />
     <Compile Include="GroupChat.cs" />
     <Compile Include="MilkshakeAction.cs" />
+    <Compile Include="ParseAppIDAction.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueenBotAction.cs" />
     <Compile Include="RollAction.cs" />
     <Compile Include="SpinAction.cs" />
+    <Compile Include="StoreEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
