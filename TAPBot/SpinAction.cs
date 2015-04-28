@@ -22,7 +22,7 @@ namespace TAPBot
             for (int i = 1; i <= numDeals; i++)
             {
                 dp.PickDeal();
-                results = results + dp.GetGameQuantity() + "\t" + dp.GetSalePrice() + " (" + dp.GetDiscountAmount() +"%)\t" + dp.GetGameName() + "\n";
+                results = results + dp.GetGameQuantity() + "\t" + dp.GetSalePrice() + " (" + dp.GetDiscountAmount() +"%)\t" + dp.GetGameName() + ((dp.GetAppID() == "") ? "" : "\t" + dp.GetAppID()) + "\n";
             }
 
             messageAvailable = true;

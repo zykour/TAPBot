@@ -46,13 +46,26 @@ namespace TAPBot
         
         public void PickDeal()
         {
+            PickDeal(1);
+        }
+
+        public void PickDeal(int reroll)
+        {
             if ( steamItems.Count == 0 )
             {
                 Initialize();
             }
 
+            // Pick the first deal, if there is a reroll factor to consider, we'll reroll as many times as required by the reroll factor
 
             int dealNumber = rng.Next(1, steamItems.Count() + 1);
+            
+            // By default reroll is set to 1, meaning there is no reroll unless it's more than or equal to 2
+
+            for (int i = 1; i < reroll; i++)
+            {
+                dealNumber = rng.Next(1, steamItems.Count() + 1);
+            }
 
             String line = steamItems.ElementAt(dealNumber);
 
@@ -71,6 +84,13 @@ namespace TAPBot
             }
 
             int discountNum = rng.Next(1, 36);
+
+            // Uses the same logic as above for rerolling the deal, we want to make sure the discount percentage is also rerolled the same number of times
+
+            for (int i = 1; i < reroll; i++)
+            {
+                discountNum = rng.Next(1, 36);
+            }
 
             if (discountNum < 13)
             {

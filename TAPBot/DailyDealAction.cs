@@ -39,11 +39,11 @@ namespace TAPBot
             {
                 int day = Convert.ToInt32((DateTime.Today - new DateTime(2010, 1, 1)).TotalDays);
                 //Random randomGen = new Random((day + numLines * Convert.ToInt32(DateTime.Today.Day)) * reroll);
-                DealPicker dp = new DealPicker(day * reroll);
+                DealPicker dp = new DealPicker(day);
 
                 currentDate = DateTime.Today;
                 hasRanToday = true;
-                dp.PickDeal();
+                dp.PickDeal(reroll);
 
                 string fixedQuantity = (dp.GetGameQuantity() == 1) ? " copy remains." : " copies remain.";
                 string fixedPrice = (dp.GetSalePrice() == 1) ? " point (" : " points (";
