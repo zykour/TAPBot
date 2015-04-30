@@ -38,7 +38,6 @@ namespace TAPBot
             if (!hasRanToday)
             {
                 int day = Convert.ToInt32((DateTime.Today - new DateTime(2010, 1, 1)).TotalDays);
-                //Random randomGen = new Random((day + numLines * Convert.ToInt32(DateTime.Today.Day)) * reroll);
                 DealPicker dp = new DealPicker(day);
 
                 currentDate = DateTime.Today;

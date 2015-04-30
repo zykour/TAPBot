@@ -9,33 +9,34 @@ namespace TAPBot
 {
     abstract class BotAction
     {
-        protected string results;
-        protected bool success;
-        protected bool messageAvailable;
+
+        // Holds the context for this action to execute
+
+        protected BotContext botContext;
 
         public BotAction()
         {
-            results = "";
-            success = false;
-            messageAvailable = false;
+            botContext = null;
         }
 
-        public abstract void SetFriendID(SteamID friendId);
-        public abstract void SetFriendID(string friendId);
-        public abstract bool HasFriendID();
-        public abstract string GetFriendID();
-        public abstract SteamID GetFriendSteamID();
+        public BotAction(BotContext botContext)
+        {
+            this.botContext = botContext;
+        }
 
-        public abstract void SetGroupChatSteamID(SteamID groupId);
-        public abstract void SetGroupChatSteamID(string groupId);
-        public abstract bool HasGroupChatID();
-        public abstract string GetGroupChatID();
-        public abstract SteamID GetGroupChatSteamID();
+        // A helper method for all bot actions that sends a message in response to the command
+        // Any command that should send always send a response to a user, call SendFriendMessage directly
 
-        public abstract string GetMessage();
-        public abstract bool IsSuccessful();
-        public abstract bool HasMessage();
+        public abstract void SendMessage();
+        
+        // SendGroupMessage and SendFriendMessage are called by SendMessage but can be called directly for different behavior
 
+        public abstract void SendGroupMessage();
+        public abstract void SendFriendMessage();
+
+
+
+        public abstract bool ValidCommand();
         public abstract void Execute();
     }
 }

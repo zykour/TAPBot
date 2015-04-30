@@ -66,7 +66,7 @@
     <Compile Include="BinaryTree.cs" />
     <Compile Include="BinaryTreeNode.cs" />
     <Compile Include="BotAction.cs" />
-    <Compile Include="ChatBotAction.cs" />
+    <Compile Include="BotContext.cs" />
     <Compile Include="DailyDealAction.cs" />
     <Compile Include="CommandFactory.cs" />
     <Compile Include="DealEntry.cs" />
