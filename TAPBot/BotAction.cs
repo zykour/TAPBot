@@ -7,7 +7,7 @@ using SteamKit2;
 
 namespace TAPBot
 {
-    abstract class BotAction
+    class BotAction
     {
 
         // Holds the context for this action to execute
@@ -23,20 +23,41 @@ namespace TAPBot
         {
             this.botContext = botContext;
         }
-
+ 
         // A helper method for all bot actions that sends a message in response to the command
-        // Any command that should send always send a response to a user, call SendFriendMessage directly
+        // Any command that should always send a response to a user, call SendFriendMessage directly
 
-        public abstract void SendMessage();
+        protected void SendMessage(string message)
+        {
+            if (botContext.GroupID != null)
+            {
+                SendGroupMessage(message);
+            }
+            else if(botContext.FriendID != null)
+            {
+                SendFriendMessage(message);
+            }
+        }
         
-        // SendGroupMessage and SendFriendMessage are called by SendMessage but can be called directly for different behavior
+        // SendGroupMessage and SendFriendMessage are called by SendMessage but can be called directly for custom behavior
 
-        public abstract void SendGroupMessage();
-        public abstract void SendFriendMessage();
+        protected void SendGroupMessage(string message)
+        {
+            botContext.SteamFriend.SendChatRoomMessage(botContext.GroupID, EChatEntryType.ChatMsg, message);
+        }
 
+        protected void SendFriendMessage(string message)
+        {
+            botContext.SteamFriend.SendChatMessage(botContext.FriendID, EChatEntryType.ChatMsg, message);
+        }
 
+        // Encapsulates the logic for deciding whether the line of chat text was a valid invocation for this action
 
-        public abstract bool ValidCommand();
-        public abstract void Execute();
+        public virtual bool ValidCommand(string command)
+        {
+            return false;
+        }
+
+        public virtual void Execute();
     }
 }

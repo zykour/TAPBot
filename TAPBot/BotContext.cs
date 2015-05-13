@@ -40,14 +40,25 @@ namespace TAPBot
             set { command = value; }
         }
 
-        public BotContext() : this(null, null, null) { }
-        public BotContext(string command) : this(null, null, command) { }
-        public BotContext(SteamID groupId, SteamID friendId) : this(groupId, friendId, null) { }
-        public BotContext(SteamID groupId, SteamID friendId, string command)
+        // Holds the SteamFriend object for sending messages and joining chats
+
+        private SteamFriends steamFriend;
+        public SteamFriends SteamFriend
+        {
+            get { return steamFriend; }
+        }
+
+        public BotContext() : this(null, null, null, null) { }
+        public BotContext(string command) : this(null, null, command, null) { }
+        public BotContext(string command, SteamFriends steamFriend) : this(null, null, command, steamFriend) { }
+        public BotContext(SteamID groupId, SteamID friendId) : this(groupId, friendId, null, null) { }
+        public BotContext(SteamID groupId, SteamID friendId, SteamFriends steamFriend) : this(groupId, friendId, null, steamFriend) { }
+        public BotContext(SteamID groupId, SteamID friendId, string command, SteamFriends steamFriend)
         {
             this.groupId = groupId;
             this.friendId = friendId;
             this.command = command;
+            this.steamFriend = steamFriend;
         }
     }
 }
