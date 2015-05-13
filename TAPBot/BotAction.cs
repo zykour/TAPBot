@@ -9,55 +9,44 @@ namespace TAPBot
 {
     class BotAction
     {
-
-        // Holds the context for this action to execute
-
-        protected BotContext botContext;
-
-        public BotAction()
-        {
-            botContext = null;
-        }
-
-        public BotAction(BotContext botContext)
-        {
-            this.botContext = botContext;
-        }
- 
         // A helper method for all bot actions that sends a message in response to the command
-        // Any command that should always send a response to a user, call SendFriendMessage directly
+        // Any command that should send always send a response to a user, call SendFriendMessage directly
 
-        protected void SendMessage(string message)
+        protected virtual void SendMessage(BotContext botContext, string chatMessage)
         {
             if (botContext.GroupID != null)
             {
-                SendGroupMessage(message);
+                SendGroupMessage(botContext, chatMessage);
             }
-            else if(botContext.FriendID != null)
+            else if (botContext.FriendID != null)
             {
-                SendFriendMessage(message);
+                SendFriendMessage(botContext, chatMessage);
             }
         }
         
-        // SendGroupMessage and SendFriendMessage are called by SendMessage but can be called directly for custom behavior
+        // SendGroupMessage and SendFriendMessage are called by SendMessage but can be called directly for different behavior   
 
-        protected void SendGroupMessage(string message)
+        protected void SendGroupMessage(BotContext botContext, string chatMessage)
         {
-            botContext.SteamFriend.SendChatRoomMessage(botContext.GroupID, EChatEntryType.ChatMsg, message);
+            botContext.SteamFriend.SendChatRoomMessage(botContext.GroupID, EChatEntryType.ChatMsg, chatMessage);
         }
 
-        protected void SendFriendMessage(string message)
+        protected void SendFriendMessage(BotContext botContext, string chatMessage)
         {
-            botContext.SteamFriend.SendChatMessage(botContext.FriendID, EChatEntryType.ChatMsg, message);
+            botContext.SteamFriend.SendChatMessage(botContext.FriendID, EChatEntryType.ChatMsg, chatMessage);
         }
+        
+        // A function to determine if this the line of chat text is a valid command for this action
 
-        // Encapsulates the logic for deciding whether the line of chat text was a valid invocation for this action
+        public abstract bool IsValidCommand(string chatInput);
 
-        public virtual bool ValidCommand(string command)
+        // This is where the logic is done for every action and the output is generated (and returned)
+
+        protected abstract string ProduceChatMessage(BotContext botContext);
+
+        public void Execute(BotContext botContext)
         {
-            return false;
+            SendMessage(botContext, ProduceChatMessage(botContext));
         }
-
-        public virtual void Execute();
     }
 }

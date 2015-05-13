@@ -34,16 +34,14 @@ namespace TAPBot
             // finds the balance (co-op shop points) of the invoker
             // Specific to The After Party steam group
 
-            if (command.Trim().CompareTo("!balance") == 0)
-                return new BalanceBotAction(userId, chatId);
+            // balance
 
             //------------------------------------------------------------------------
 
             // determines which member has the most co-op shop points.
             // Specific to The After Party steam group
 
-            if (command.Trim().CompareTo("!queen") == 0)
-                return new QueenBotAction(userId, chatId);
+            // queen
 
             //------------------------------------------------------------------------
 
@@ -68,11 +66,7 @@ namespace TAPBot
             // a trivial action to count how many times !milkshakes has been invoked
             // no real purpose
 
-            if (command.Trim().CompareTo("!milkshake") == 0)
-            {
-                milkshakes.Execute();
-                return new ChatBotAction(userId, chatId, milkshakes.GetMessage());
-            }
+            //milkshake
 
             //------------------------------------------------------------------------
 

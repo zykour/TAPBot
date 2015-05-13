@@ -12,11 +12,17 @@ namespace TAPBot
         protected DateTime currentDate; // represents the date when this was last called
         protected int reroll;
         protected string results;
+
+        // Holds the today's deal
+
         protected DealEntry de;
         public DealEntry Deal
         {
             get { return de; }
         }
+
+        // Deal Picker is a shared object for picking random deals
+
 
         public DailyDealAction() 
         {

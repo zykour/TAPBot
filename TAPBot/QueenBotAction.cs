@@ -9,15 +9,9 @@ using System.Text.RegularExpressions;
 
 namespace TAPBot
 {
-    class QueenBotAction : ChatBotAction {
-        
-        public QueenBotAction(string friendId, string chatId) 
-            : base(friendId, chatId)
-        {
-        }
-
-        
-        public override void Execute()
+    class QueenBotAction : BotAction {
+                
+        public override string ProduceChatMessage(BotContext botContext)
         {
             // General format for balances is: Name     ##      SteamID
             Regex balanceCmd = new Regex(@"([^0-9]*)([0-9]+)\s+([0-9]+)");
@@ -45,9 +39,7 @@ namespace TAPBot
                         }
                     }
 
-                    results = "Queen " + highestPoints + " is winning with " + max + " points!";
-                    messageAvailable = true;
-                    success = true;
+                    return "Queen " + highestPoints + " is winning with " + max + " points!";
                 }
             }
             catch (Exception e)
@@ -55,6 +47,19 @@ namespace TAPBot
                 Console.WriteLine("The file could not be read:");
                 Console.WriteLine(e.Message);
             }
+
+            return null;
+        }
+
+        public override bool IsValidCommand(string chatInput)
+        {
+            if (chatInput.CompareTo("!queen") == 0 ||
+                chatInput.CompareTo("/queen") == 0)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

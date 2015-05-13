@@ -9,26 +9,33 @@ using System.Text.RegularExpressions;
 
 namespace TAPBot
 {
-    class MilkshakeAction {
+    class MilkshakeAction : BotAction {
         
         protected int milkshakes;
-        protected string results;
 
         public MilkshakeAction() 
         {
             milkshakes = 0;
-            results = "";
         }
 
-        public void Execute()
+        public override bool IsValidCommand(string chatInput)
         {
-            milkshakes++;
-            results = "Milkshakes: " + milkshakes;
+            if (chatInput.CompareTo("!milkshake") == 0 ||
+                chatInput.CompareTo("!milkshakes") == 0 ||
+                chatInput.CompareTo("/milkshake") == 0 ||
+                chatInput.CompareTo("/milkshakes") == 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
-        public string GetMessage()
+        protected override string ProduceChatMessage(BotContext botContext)
         {
-            return results;
+            milkshakes += 1;
+
+            return "Milkshakes: " + milkshakes;
         }
     }
 }
