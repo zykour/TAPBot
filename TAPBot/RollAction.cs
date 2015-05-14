@@ -9,18 +9,10 @@ using System.Text.RegularExpressions;
 
 namespace TAPBot
 {
-    class RollAction : ChatBotAction
+    class RollAction : BotAction
     {
 
-        protected string msg;
-
-        public RollAction(string friendId, string chatId, string msg) 
-            : base(friendId, chatId)
-        {
-            this.msg = msg;
-        }
-
-        public override void Execute() 
+        public override string ProduceChatMessage(BotContext botContext)
         {
             Regex rollFormat = new Regex(@"[!/](roll )([0-9]+)\-([0-9]+)");
         
@@ -45,9 +37,18 @@ namespace TAPBot
             Random rg = new Random();
             int randomNum = rg.Next(lower, upper + 1);
 
-            results = "Rolled a " + randomNum;
-            messageAvailable = true;
-            success = true;
+            return "rolled a " + randomNum;
+        }
+
+        public override bool IsValidCommand(string chatInput)
+        {
+            if ( chatInput.StartsWith("!roll") || 
+                 chatInput.StartsWith("/roll") )
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
