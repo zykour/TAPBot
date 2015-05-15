@@ -13,128 +13,105 @@ namespace TAPBot
     // designed specifically for TAPBot, thus contains hardcoded values
     class DealPicker
     {
-        private Random rng;
-        private string appId;
-        private string gameName;
-        private int discountPrice;
-        private int discountAmnt;
-        private int gameQuantity;
-        private int reroll;
         private LinkedList<string> steamItems;
         private Regex inventoryCmd;
-        private DealEntry dealEntry;
-        public DealEntry Data
-        {
-            get { return dealEntry; }
-        }
-
-        public DealPicker(int seed)
-        {
-            rng = new Random(seed);
-            reroll = 1;
-            steamItems = new LinkedList<string>();
-            inventoryCmd = new Regex(@"([0-9]+)\s+([0-9]+)\s+([^\t]+)(\t)*(.+)?");
-        }
-
+        
         public DealPicker()
         {
-            rng = new Random();
-            reroll = 1;
             steamItems = new LinkedList<string>();
             inventoryCmd = new Regex(@"([0-9]+)\s+([0-9]+)\s+([^\t]+)(\t)*(.+)?");
         }
-        
-        public void PickDeal()
-        {
-            PickDeal(1);
-        }
 
-        public void PickDeal(int reroll)
+        public DealEntry PickDeal() { return PickDeal(new Random(), 1); }
+        public DealEntry PickDeal(Random random) { return PickDeal(random, 1); }
+        public DealEntry PickDeal(int reroll) { return PickDeal(new Random(), reroll); }
+
+        public DealEntry PickDeal(Random random, int reroll)
         {
             if ( steamItems.Count == 0 )
             {
                 Initialize();
             }
 
+            DealEntry dealEntry = new DealEntry();
+
             // Pick the first deal, if there is a reroll factor to consider, we'll reroll as many times as required by the reroll factor
 
-            int dealNumber = rng.Next(1, steamItems.Count() + 1);
+            int dealNumber = random.Next(1, steamItems.Count() + 1);
             
             // By default reroll is set to 1, meaning there is no reroll unless it's more than or equal to 2
 
             for (int i = 1; i < reroll; i++)
             {
-                dealNumber = rng.Next(1, steamItems.Count() + 1);
+                dealNumber = random.Next(1, steamItems.Count() + 1);
             }
 
-            String line = steamItems.ElementAt(dealNumber);
+            String line = steamItems.ElementAt(dealNumber - 1);
 
             Match match = inventoryCmd.Match(line);
             int originalPrice = 0;
-
+            
             if (match.Success)
             {
-                gameQuantity = Int32.Parse(match.Groups[1].ToString().Trim());
-                gameName = match.Groups[3].ToString();
+                dealEntry.Quantity = Int32.Parse(match.Groups[1].ToString().Trim());
+                dealEntry.Name = match.Groups[3].ToString();
                 originalPrice = Int32.Parse(match.Groups[2].ToString().Trim());
                 if (match.Groups[5].Success)
                 {
-                    appId = match.Groups[5].ToString();
+                    dealEntry.AppID = match.Groups[5].ToString();
                 }
             }
 
-            int discountNum = rng.Next(1, 36);
+            int discountNum = random.Next(1, 36);
 
             // Uses the same logic as above for rerolling the deal, we want to make sure the discount percentage is also rerolled the same number of times
 
             for (int i = 1; i < reroll; i++)
             {
-                discountNum = rng.Next(1, 36);
+                discountNum = random.Next(1, 36);
             }
 
             if (discountNum < 13)
             {
-                discountAmnt = 33;
+                dealEntry.DiscountAmount = 33;
             }
             else if (discountNum < 18)
             {
-                discountAmnt = 40;
+                dealEntry.DiscountAmount = 40;
             }
             else if (discountNum < 26)
             {
-                discountAmnt = 50;
+                dealEntry.DiscountAmount = 50;
             }
             else if (discountNum < 30)
             {
-                discountAmnt = 66;
+                dealEntry.DiscountAmount = 66;
             }
             else if (discountNum < 35)
             {
-                discountAmnt = 75;
+                dealEntry.DiscountAmount = 75;
             }
             else
             {
-                discountAmnt = 85;
+                dealEntry.DiscountAmount = 85;
             }
 
-            discountPrice = Convert.ToInt32(Math.Floor(originalPrice * (1 - (discountAmnt / 100.00))));
+            dealEntry.Price = Convert.ToInt32(Math.Floor(originalPrice * (1 - (dealEntry.DiscountAmount / 100.00))));
 
-            if (discountPrice == 0)
+            if (dealEntry.Price == 0)
             {
-                discountPrice = 1;
+                dealEntry.Price = 1;
             }
 
-            dealEntry = new DealEntry();
-            dealEntry.AppID = appId;
-            dealEntry.Quantity = gameQuantity;
-            dealEntry.Price = discountPrice;
-            dealEntry.Name = gameName;
             dealEntry.Expiration = DateTime.Today;
+
+            return dealEntry;
         }
 
         public void Initialize()
         {
             string line = "";
+            steamItems = new LinkedList<string>();
 
             try
             {
@@ -167,44 +144,14 @@ namespace TAPBot
             }
         }
 
-        public void Reset()
+        public int Count()
         {
-            reroll = 1;
-        }
+            if (steamItems.Count < 1)
+            {
+                Initialize();
+            }
 
-        public void Reroll(int val)
-        {
-            reroll = val;
-        }
-
-        public void Reroll()
-        {
-            reroll++;
-        }
-
-        public string GetAppID()
-        {
-            return (appId != null) ? appId : "";
-        }
-
-        public string GetGameName()
-        {
-            return gameName;
-        }
-
-        public int GetSalePrice()
-        {
-            return discountPrice;
-        }
-
-        public int GetGameQuantity()
-        {
-            return gameQuantity;
-        }
-
-        public int GetDiscountAmount()
-        {
-            return discountAmnt;
+            return steamItems.Count;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace TAPBot
     class BalanceBotAction : BotAction
     {
 
-        public override string ProduceChatMessage(BotContext botContext)
+        protected override string ProduceChatMessage(BotContext botContext)
         {
             // General format for balances is: Name     ##      SteamID
             Regex balanceCmd = new Regex(@"([^0-9]*)([0-9]+)\s+([0-9]+)");
@@ -31,7 +31,7 @@ namespace TAPBot
                         {
                             string matchedString = match.Groups[3].ToString().Trim();
 
-                            if (matchedString.CompareTo(botContext.FriendID.ToString().Trim()) == 0)
+                            if (matchedString.CompareTo(botContext.FriendID.ConvertToUInt64().ToString().Trim()) == 0)
                             {
                                 return match.Groups[1].ToString().Trim() + ", your Co-op Shop balance is: " + match.Groups[2].ToString().Trim();                            
                             }
@@ -45,7 +45,7 @@ namespace TAPBot
                 Console.WriteLine(e.Message);
             }
 
-            return null;
+            return "";
         }
 
         public override bool IsValidCommand(string chatInput)

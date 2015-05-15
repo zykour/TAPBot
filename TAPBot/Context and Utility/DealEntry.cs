@@ -15,20 +15,18 @@ namespace TAPBot
             set { expiration = value; }
         }
 
-        public DealEntry() { }
-        public DealEntry(int price, int quantity, string name, string appId, DateTime expiration) : base(price, quantity, name, appId)
+        private int discountAmount;
+        public int DiscountAmount
         {
-            this.expiration = expiration;
+            get { return discountAmount; }
+            set { discountAmount = value; }
         }
 
-        public void SetExpiration(DateTime expiration)
+        public DealEntry() : this(0, 0, "", "", DateTime.Today, 0) { }
+        public DealEntry(int price, int quantity, string name, string appId, DateTime expiration, int discountAmount) : base(price, quantity, name, appId)
         {
             this.expiration = expiration;
-        }
-
-        public DateTime GetExpiration()
-        {
-            return expiration;
+            this.discountAmount = discountAmount;
         }
     }
 }

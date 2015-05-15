@@ -11,7 +11,7 @@ namespace TAPBot
 {
     class QueenBotAction : BotAction {
                 
-        public override string ProduceChatMessage(BotContext botContext)
+        protected override string ProduceChatMessage(BotContext botContext)
         {
             // General format for balances is: Name     ##      SteamID
             Regex balanceCmd = new Regex(@"([^0-9]*)([0-9]+)\s+([0-9]+)");

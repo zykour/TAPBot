@@ -62,26 +62,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BalanceBotAction.cs" />
-    <Compile Include="BinaryTree.cs" />
-    <Compile Include="BinaryTreeNode.cs" />
-    <Compile Include="BotAction.cs" />
-    <Compile Include="BotContext.cs" />
-    <Compile Include="DailyDealAction.cs" />
+    <Compile Include="BotAction\BalanceBotAction.cs" />
+    <Compile Include="BotAction\BotAction.cs" />
+    <Compile Include="BotAction\DailyDealAction.cs" />
+    <Compile Include="BotAction\JoinAction.cs" />
+    <Compile Include="BotAction\MilkshakeAction.cs" />
+    <Compile Include="BotAction\ParseAppIDAction.cs" />
+    <Compile Include="BotAction\QueenBotAction.cs" />
+    <Compile Include="BotAction\RerollAction.cs" />
+    <Compile Include="BotAction\ResetAction.cs" />
+    <Compile Include="BotAction\RollAction.cs" />
+    <Compile Include="BotAction\SpinAction.cs" />
     <Compile Include="CommandFactory.cs" />
-    <Compile Include="DealEntry.cs" />
-    <Compile Include="DealPicker.cs" />
-    <Compile Include="Friend.cs" />
-    <Compile Include="GroupChat.cs" />
-    <Compile Include="MilkshakeAction.cs" />
-    <Compile Include="ParseAppIDAction.cs" />
+    <Compile Include="Context and Utility\BinaryTree.cs" />
+    <Compile Include="Context and Utility\BinaryTreeNode.cs" />
+    <Compile Include="Context and Utility\BotContext.cs" />
+    <Compile Include="Context and Utility\DealEntry.cs" />
+    <Compile Include="Context and Utility\DealPicker.cs" />
+    <Compile Include="Context and Utility\StoreEntry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QueenBotAction.cs" />
-    <Compile Include="RollAction.cs" />
-    <Compile Include="SaveSpinAction.cs" />
-    <Compile Include="SpinAction.cs" />
-    <Compile Include="StoreEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -36,7 +36,7 @@ namespace TAPBot
             set { appId = value; }
         }
 
-        public StoreEntry() {}
+        public StoreEntry() : this(0,0,"","") {}
         public StoreEntry(int price, int quantity, string name, string appId)
         {
             this.price = price;

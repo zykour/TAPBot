@@ -53,9 +53,7 @@ namespace TAPBot
         {
             if (subRoot == null)
                 return default(TValue);
-
-            Console.WriteLine(key.ToString() + " " + subRoot.Key.ToString());
-
+            
             if (subRoot.Key.CompareTo(key) == 0)
                 return subRoot.Data;
             else if (subRoot.Key.CompareTo(key) > 0)

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using System.Net;
 
 using SteamKit2;
 
@@ -32,6 +31,8 @@ namespace TAPBot
             }
 
             // instantiate commandFactory used to create bot actions
+            // todo: rename to BotActionManager
+            // may use a state pattern in the future to support a bot with different actions depending on state
 
             commandFactory = new CommandFactory();
 
@@ -72,25 +73,6 @@ namespace TAPBot
             
         }
 
-
-        // Simple method to handle sending messages to the appropriate location
-
-        private static void HandleMessage(BotAction botAction)
-        {
-
-            // First check whether the Action object has a groupID, if so then the original command was invoked in a group chat
-            // If for any reason a command should result in the bot messaging a user isntead of posting it to chat
-            // Then handle that in the CommandFactory by instantiating an object with a null chatID
-
-            if (botAction.HasGroupChatID())
-            {
-                steamFriends.SendChatRoomMessage(botAction.GetGroupChatSteamID(), EChatEntryType.ChatMsg, botAction.GetMessage());
-            }
-            else
-            {
-                steamFriends.SendChatMessage(botAction.GetFriendSteamID(), EChatEntryType.ChatMsg, botAction.GetMessage());
-            }
-        }
 
         static void OnAccountInfo(SteamUser.AccountInfoCallback callback)
         {
@@ -166,31 +148,8 @@ namespace TAPBot
 
         static void OnChatMsg(SteamFriends.ChatMsgCallback callback)
         {
-            // Write the incoming message to the console
-            Console.WriteLine(callback.Message);
             // use the factory to get an appropriate object correlating to the action
-            BotAction botAction = commandFactory.CreateBotAction(callback.Message.Trim(), callback.ChatterID.ConvertToUInt64().ToString(), callback.ChatRoomID.ConvertToUInt64().ToString());
-
-            // Join is a special command, we could send it to the commandFactory but unlike every other action this bot performs, it needs access to some of the variables from main
-            // ToDo: Possible workaround would be to have an Action that returns the ChatID as a string
-
-            if (callback.Message.StartsWith("!join "))
-            {
-                JoinChat(callback.Message.Trim());
-                return;
-            }
-
-            // if we successfully got an object, run the overridden Execute method and print any messages if applicable
-
-            if (botAction != null)
-            {
-                botAction.Execute();
-
-                if (botAction.IsSuccessful() && botAction.HasMessage())
-                {
-                    HandleMessage(botAction);
-                }
-            }
+            commandFactory.ParseChatText(new BotContext(callback.ChatRoomID, callback.ChatterID, callback.Message.Trim(), steamFriends));
         }
 
         static void OnChatInvite(SteamFriends.ChatInviteCallback callback) 
@@ -200,58 +159,12 @@ namespace TAPBot
             steamFriends.JoinChat(chatId);
         }
 
-        static void JoinChat(string msg)
-        {
-            Regex joinCmd = new Regex(@"(!join)(\s+)(.+)");
-            Regex validSteamURL = new Regex(@"(http://)?(www\.)?(steamcommunity\.com/groups/)([a-zA-Z0-9_]+)");
-            Match match = joinCmd.Match(msg);
-            Match urlMatch;
-
-            if (match.Success)
-            {
-                urlMatch = validSteamURL.Match(match.Groups[3].Value);
-                Console.WriteLine(match.Groups[3].Value);
-
-                if (urlMatch.Success)
-                {
-                    string html = new WebClient().DownloadString(match.Groups[3].Value);
-                    Regex joinChatExpr = new Regex(@".*(joinchat/)([0-9]+).*");
-                    Match htmlMatch = joinChatExpr.Match(html);
-
-                    if (htmlMatch.Success)
-                    {
-                        ulong chatID = 0;
-                        if (UInt64.TryParse(htmlMatch.Groups[2].Value, out chatID))
-                        {
-                            Console.WriteLine("Entering chat...");
-                            SteamID groupChatID = new SteamID(chatID);
-                            steamFriends.JoinChat(groupChatID);
-                        }
-                    }
-                }
-            }
-        }
-
         static void OnFriendMsg(SteamFriends.FriendMsgCallback callback)
         {
-            if (callback.EntryType == EChatEntryType.ChatMsg) {
-
-                if (callback.Message.StartsWith("!join "))
-                {
-                    JoinChat(callback.Message.Trim());
-                    return;
-                }
-
-                BotAction botAction = commandFactory.CreateBotAction(callback.Message.ToString(), callback.Sender.ConvertToUInt64().ToString(), null);
-
-                if (botAction != null)
-                {
-                    botAction.Execute();
-                    if (botAction.IsSuccessful() && botAction.HasMessage())
-                    {
-                        HandleMessage(botAction);
-                    }
-                }
+            if (callback.EntryType == EChatEntryType.ChatMsg)
+            {
+                // use the factory to get an appropriate object correlating to the action
+                commandFactory.ParseChatText(new BotContext(null, callback.Sender, callback.Message.Trim(), steamFriends));
             }            
         }
     }

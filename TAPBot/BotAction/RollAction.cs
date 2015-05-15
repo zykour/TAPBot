@@ -12,11 +12,11 @@ namespace TAPBot
     class RollAction : BotAction
     {
 
-        public override string ProduceChatMessage(BotContext botContext)
+        protected override string ProduceChatMessage(BotContext botContext)
         {
             Regex rollFormat = new Regex(@"[!/](roll )([0-9]+)\-([0-9]+)");
         
-            Match match = rollFormat.Match(msg);
+            Match match = rollFormat.Match(botContext.Command);
 
             int lower = 1;
             int upper = 100;

@@ -14,13 +14,16 @@ namespace TAPBot
 
         protected virtual void SendMessage(BotContext botContext, string chatMessage)
         {
-            if (botContext.GroupID != null)
+            if (chatMessage.CompareTo("") != 0)
             {
-                SendGroupMessage(botContext, chatMessage);
-            }
-            else if (botContext.FriendID != null)
-            {
-                SendFriendMessage(botContext, chatMessage);
+                if (botContext.GroupID != null)
+                {
+                    SendGroupMessage(botContext, chatMessage);
+                }
+                else if (botContext.FriendID != null)
+                {
+                    SendFriendMessage(botContext, chatMessage);
+                }
             }
         }
         
@@ -38,11 +41,11 @@ namespace TAPBot
         
         // A function to determine if this the line of chat text is a valid command for this action
 
-        public abstract bool IsValidCommand(string chatInput);
+        public virtual bool IsValidCommand(string chatInput) { return false; }
 
         // This is where the logic is done for every action and the output is generated (and returned)
 
-        protected abstract string ProduceChatMessage(BotContext botContext);
+        protected virtual string ProduceChatMessage(BotContext botContext) { return ""; }
 
         public void Execute(BotContext botContext)
         {

@@ -6,34 +6,35 @@ using System.Threading.Tasks;
 
 namespace TAPBot
 {
-    class DailyDealAction {
+    class DailyDealAction : BotAction {
         
         protected bool hasRanToday;
         protected DateTime currentDate; // represents the date when this was last called
         protected int reroll;
-        protected string results;
+        string dealMessage;
+
+        protected DealPicker dealPicker;
 
         // Holds the today's deal
 
-        protected DealEntry de;
+        protected DealEntry dealEntry;
         public DealEntry Deal
         {
-            get { return de; }
+            get { return dealEntry; }
         }
 
-        // Deal Picker is a shared object for picking random deals
-
-
-        public DailyDealAction() 
+        protected DailyDealAction() { }
+        public DailyDealAction(DealPicker dealPicker) 
         {
             hasRanToday = false;
             currentDate = DateTime.Today;
             reroll = 1;
-            results = "";
+            dealMessage = "";
+            this.dealPicker = dealPicker;
         }
 
-        
-        public void Execute()
+
+        protected override string ProduceChatMessage(BotContext botContext)
         {
             if (DateTime.Compare(DateTime.Today, currentDate) != 0)
             {
@@ -44,32 +45,37 @@ namespace TAPBot
             if (!hasRanToday)
             {
                 int day = Convert.ToInt32((DateTime.Today - new DateTime(2010, 1, 1)).TotalDays);
-                DealPicker dp = new DealPicker(day);
 
                 currentDate = DateTime.Today;
                 hasRanToday = true;
-                dp.PickDeal(reroll);
+                dealEntry = dealPicker.PickDeal(new Random(day), reroll);
 
-                string fixedQuantity = (dp.GetGameQuantity() == 1) ? " copy remains." : " copies remain.";
-                string fixedPrice = (dp.GetSalePrice() == 1) ? " point (" : " points (";
+                string fixedQuantity = (dealEntry.Quantity == 1) ? " copy remains." : " copies remain.";
+                string fixedPrice = (dealEntry.Price == 1) ? " point (" : " points (";
 
                 //results = "The Co-op Shop Special of the Day is \"" + gameName + ".\" The discounted price is " + gamePrice + fixedPrice + discountAmnt + "%), currently " + gameQuantity + fixedQuantity;
-                results = "Daily deal: '" + dp.GetGameName() + "' for " + dp.GetSalePrice() + fixedPrice + dp.GetDiscountAmount() + "%), currently " + dp.GetGameQuantity() + fixedQuantity;
+                dealMessage = "Daily deal: '" + dealEntry.Name + "' for " + dealEntry.Price + fixedPrice + dealEntry.DiscountAmount + "%), currently " + dealEntry.Quantity + fixedQuantity;
 
-                if (dp.GetAppID().CompareTo("") != 0)
+                if (dealEntry.AppID.CompareTo("") != 0)
                 {
-                    results = results + " " + dp.GetAppID();
+                    dealMessage = dealMessage + " " + dealEntry.AppID;
                 }
-
-                de = dp.Data;
             }
+
+            return dealMessage;
         }
 
-        public String GetMessage()
+        public override bool IsValidCommand(string chatInput)
         {
-            return results;
-        }
+            if (chatInput.CompareTo("/deal") == 0 ||
+                chatInput.CompareTo("!deal") == 0)
+            {
+                return true;
+            }
 
+            return false;
+        }
+        
         // Used to change the daily deal. Daily deal is selected by the day's current date as a seed for the random number generator multiplied by the reroll factor (1 by default)
         // thus by adding 1 to the reroll factor each time this is called, we'll get a new deal
         public void Reroll()

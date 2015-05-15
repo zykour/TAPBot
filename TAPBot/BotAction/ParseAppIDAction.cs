@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace TAPBot
 {
-    class ParseAppIDAction
+    class ParseAppIDAction : BotAction
     {
         // used to determine if we need to reparse
         private DateTime lastParse;
@@ -16,15 +16,51 @@ namespace TAPBot
         // key-value pair is String-StoreEntry
         private BinaryTree<string, StoreEntry> apps;
 
+        Regex steamAppRegex;
+
         public ParseAppIDAction()
         {
             apps = new BinaryTree<string, StoreEntry>();
+            steamAppRegex = new Regex(@"(.*)?(store\.steampowered\.com/app/)([0-9]+)(.*)?");
             InitializeApps();
         }
 
-        public StoreEntry Execute(string appId)
+        protected override string ProduceChatMessage(BotContext botContext)
         {
-            return apps.Search(appId);
+            string tempStr = "";
+            Match steamAppMatch = steamAppRegex.Match(botContext.Command);
+
+            if (steamAppMatch.Success)
+            {
+                StoreEntry tempStoreEntry = apps.Search(steamAppMatch.Groups[3].ToString());
+
+                if (tempStoreEntry != null)
+                {
+                    tempStr = "Co-op shop game/app: " + tempStoreEntry.Name + ". Price: " + tempStoreEntry.Price + ". Quantity: " + tempStoreEntry.Quantity;
+                }
+            }
+
+            return tempStr + RecurseParse(steamAppMatch.Groups[4].ToString());
+        }
+
+        private string RecurseParse(string remainingMessage)
+        {
+            string tempStr = "";
+            Match steamAppMatch = steamAppRegex.Match(remainingMessage);
+
+            if (steamAppMatch.Success)
+            {
+                StoreEntry tempStoreEntry = apps.Search(steamAppMatch.Groups[3].ToString());
+
+                if (tempStoreEntry != null)
+                {
+                    tempStr = "\nCo-op shop game/app: " + tempStoreEntry.Name + ". Price: " + tempStoreEntry.Price + ". Quantity: " + tempStoreEntry.Quantity;
+                }
+
+                return tempStr + RecurseParse(steamAppMatch.Groups[4].ToString());
+            }
+
+            return "";
         }
 
         public void InitializeApps()
@@ -68,6 +104,13 @@ namespace TAPBot
                 Console.WriteLine("The file could not be read:");
                 Console.WriteLine(e.Message);
             }
+        }
+
+        public override bool IsValidCommand(string chatInput)
+        {
+            Match steamAppMatch = steamAppRegex.Match(chatInput);
+
+            return steamAppMatch.Success;
         }
     }
 }
