@@ -23,8 +23,23 @@ namespace TAPBot
 
             if (match.Success)
             {
-                lower = Int32.Parse(match.Groups[2].ToString().Trim());
-                upper = Int32.Parse(match.Groups[3].ToString().Trim());
+                try
+                {
+                    lower = Int32.Parse(match.Groups[2].ToString().Trim());
+                }
+                catch ( OverflowException e )
+                {
+                    lower = Int32.MaxValue - 1;
+                }
+
+                try 
+                {
+                    upper = Int32.Parse(match.Groups[3].ToString().Trim());
+                }
+                catch ( OverflowException e )
+                {
+                    upper = Int32.MaxValue - 1;
+                }
             }
 
             if (lower > upper)

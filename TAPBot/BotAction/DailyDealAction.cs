@@ -20,7 +20,19 @@ namespace TAPBot
         protected DealEntry dealEntry;
         public DealEntry Deal
         {
-            get { return dealEntry; }
+            get 
+            {
+                if (dealEntry == null || hasRanToday == false)
+                {
+                    ProduceChatMessage(null);
+                }
+                else if (DateTime.Compare(dealEntry.Expiration, DateTime.Today) != 0)
+                {
+                    ProduceChatMessage(null);
+                }
+
+                return dealEntry; 
+            }
         }
 
         protected DailyDealAction() { }
@@ -37,8 +49,8 @@ namespace TAPBot
         protected override string ProduceChatMessage(BotContext botContext)
         {
             if (DateTime.Compare(DateTime.Today, currentDate) != 0)
-                hasRanToday = false;
             {
+                hasRanToday = false;
                 reroll = 1;
             }
 

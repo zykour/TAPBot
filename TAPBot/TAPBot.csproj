@@ -64,6 +64,8 @@
   <ItemGroup>
     <Compile Include="BotAction\BalanceBotAction.cs" />
     <Compile Include="BotAction\BotAction.cs" />
+    <Compile Include="BotAction\BuyDealAction.cs" />
+    <Compile Include="BotAction\ConfirmBuyAction.cs" />
     <Compile Include="BotAction\DailyDealAction.cs" />
     <Compile Include="BotAction\JoinAction.cs" />
     <Compile Include="BotAction\MilkshakeAction.cs" />
@@ -73,13 +75,12 @@
     <Compile Include="BotAction\ResetAction.cs" />
     <Compile Include="BotAction\RollAction.cs" />
     <Compile Include="BotAction\SpinAction.cs" />
-    <Compile Include="BuyDealAction.cs" />
     <Compile Include="CommandFactory.cs" />
-    <Compile Include="ConfirmBuyAction.cs" />
     <Compile Include="Context and Utility\BinaryTree.cs" />
     <Compile Include="Context and Utility\BinaryTreeNode.cs" />
     <Compile Include="Context and Utility\BotContext.cs" />
     <Compile Include="Context and Utility\CoopShopUtility.cs" />
+    <Compile Include="Context and Utility\DateTimeWrapper.cs" />
     <Compile Include="Context and Utility\DealEntry.cs" />
     <Compile Include="Context and Utility\DealPicker.cs" />
     <Compile Include="Context and Utility\StoreEntry.cs" />

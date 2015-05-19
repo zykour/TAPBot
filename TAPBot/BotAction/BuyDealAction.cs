@@ -9,17 +9,38 @@ namespace TAPBot
     class BuyDealAction : BotAction
     {
         private LinkedList<UserEntry> pendingPurchases;
+
+        // this should be a reference to the dealEntry in BuyDealAction
         private DealEntry dealEntry;
 
+        private DateTimeWrapper currentDealDate;
+        private DailyDealAction dailyDealAction;
+
         protected BuyDealAction() {}
-        public BuyDealAction(LinkedList<UserEntry> pendingPurchases)
+        public BuyDealAction(LinkedList<UserEntry> pendingPurchases, DateTimeWrapper date, DailyDealAction dailyDealAction)
         {
             this.pendingPurchases = pendingPurchases;
+            this.dailyDealAction = dailyDealAction;
+            dealEntry = dailyDealAction.Deal;
+            currentDealDate = date;
         }
 
         protected override string ProduceChatMessage(BotContext botContext)
         {
+            if (DateTime.Compare(currentDealDate.Date, DateTime.Today) != 0)
+            {
+                pendingPurchases.Clear();
+                currentDealDate.Date = DateTime.Today;
+            }
+
+            dealEntry = dailyDealAction.Deal;
+
             UserEntry buyer = CoopShopUtility.GetUserEntry(botContext);
+
+            if (buyer == null)
+            {
+                return "";
+            }
 
             foreach (UserEntry user in pendingPurchases)
             {
@@ -28,8 +49,15 @@ namespace TAPBot
                     return buyer.Name + ", please '!confirm' the purchase of '" + dealEntry.Name + "'";
                 }
             }
+            
+            if (buyer.Balance < dealEntry.Price)
+            {
+                return buyer.Name + ", you do not have enough points!";
+            }
 
-            return "";
+            pendingPurchases.AddFirst(buyer);
+
+            return buyer.Name + ", please '!confirm' the purchase of '" + dealEntry.Name + "'";
         }
 
         public override bool IsValidCommand(string chatInput)

@@ -46,18 +46,18 @@ namespace TAPBot
 
             //------------------------------------------------------------------------
 
+            // a trivial action to count how many times !milkshakes has been invoked
+            // no real purpose
+
+            actions.Add(new MilkshakeAction());
+
+            //------------------------------------------------------------------------
+
             // creates a daily deal for this day
             // Specific to The After Party steam group
 
             DailyDealAction dealAction = new DailyDealAction(dealPicker);
             actions.Add(dealAction);
-
-            //------------------------------------------------------------------------
-
-            // a trivial action to count how many times !milkshakes has been invoked
-            // no real purpose
-
-            actions.Add(new MilkshakeAction());
 
             //------------------------------------------------------------------------
 
@@ -75,6 +75,17 @@ namespace TAPBot
             // Specific to The After Party steam group
 
             actions.Add(new ResetAction(dealAction));
+
+            //------------------------------------------------------------------------
+
+            // The buy deal action gives users a chance to reserve the current deal
+            // It is complemented by a confirm action that confirms their purchase
+
+            LinkedList<UserEntry> users = new LinkedList<UserEntry>();
+            DateTimeWrapper date = new DateTimeWrapper();
+
+            actions.Add(new BuyDealAction(users, date, dealAction));
+            actions.Add(new ConfirmBuyAction(users, date, dealAction));
 
             //------------------------------------------------------------------------
 
