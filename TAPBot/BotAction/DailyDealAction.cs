@@ -37,8 +37,8 @@ namespace TAPBot
         protected override string ProduceChatMessage(BotContext botContext)
         {
             if (DateTime.Compare(DateTime.Today, currentDate) != 0)
-            {
                 hasRanToday = false;
+            {
                 reroll = 1;
             }
 

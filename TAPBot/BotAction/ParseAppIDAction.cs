@@ -27,20 +27,7 @@ namespace TAPBot
 
         protected override string ProduceChatMessage(BotContext botContext)
         {
-            string tempStr = "";
-            Match steamAppMatch = steamAppRegex.Match(botContext.Command);
-
-            if (steamAppMatch.Success)
-            {
-                StoreEntry tempStoreEntry = apps.Search(steamAppMatch.Groups[3].ToString());
-
-                if (tempStoreEntry != null)
-                {
-                    tempStr = "Co-op shop game/app: " + tempStoreEntry.Name + ". Price: " + tempStoreEntry.Price + ". Quantity: " + tempStoreEntry.Quantity;
-                }
-            }
-
-            return tempStr + RecurseParse(steamAppMatch.Groups[4].ToString());
+            return RecurseParse(botContext.Command.Trim());
         }
 
         private string RecurseParse(string remainingMessage)
@@ -54,7 +41,7 @@ namespace TAPBot
 
                 if (tempStoreEntry != null)
                 {
-                    tempStr = "\nCo-op shop game/app: " + tempStoreEntry.Name + ". Price: " + tempStoreEntry.Price + ". Quantity: " + tempStoreEntry.Quantity;
+                    tempStr = "Co-op shop game/app: " + tempStoreEntry.Name + ". Price: " + tempStoreEntry.Price + ". Quantity: " + tempStoreEntry.Quantity + "\n";
                 }
 
                 return tempStr + RecurseParse(steamAppMatch.Groups[4].ToString());
