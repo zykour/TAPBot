@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SteamKit2;
-using System.IO;
-using System.Text.RegularExpressions;
 
 namespace TAPBot
 {
@@ -14,35 +12,11 @@ namespace TAPBot
 
         protected override string ProduceChatMessage(BotContext botContext)
         {
-            // General format for balances is: Name     ##      SteamID
-            Regex balanceCmd = new Regex(@"([^0-9]*)([0-9]+)\s+([0-9]+)");
+            UserEntry userEntry = CoopShopUtility.GetUserEntry(botContext);
 
-            try
+            if (userEntry != null)
             {
-                using (StreamReader sr = new StreamReader(@"C:\Users\zykour\Dropbox\TAP balance.txt"))
-                {
-                    String line;
-
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        Match match = balanceCmd.Match(line);
-
-                        if (match.Success)
-                        {
-                            string matchedString = match.Groups[3].ToString().Trim();
-
-                            if (matchedString.CompareTo(botContext.FriendID.ConvertToUInt64().ToString().Trim()) == 0)
-                            {
-                                return match.Groups[1].ToString().Trim() + ", your Co-op Shop balance is: " + match.Groups[2].ToString().Trim();                            
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("The file could not be read: ");
-                Console.WriteLine(e.Message);
+                return userEntry.Name + ", your balance is " + userEntry.Balance;
             }
 
             return "";
