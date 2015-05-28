@@ -83,9 +83,10 @@ namespace TAPBot
 
             LinkedList<UserEntry> users = new LinkedList<UserEntry>();
             DateTimeWrapper date = new DateTimeWrapper();
+            DealWrapper deal = new DealWrapper(dealAction.Deal);
 
-            actions.Add(new BuyDealAction(users, date, dealAction));
-            actions.Add(new ConfirmBuyAction(users, date, dealAction));
+            actions.Add(new BuyDealAction(users, date, dealAction, deal));
+            actions.Add(new ConfirmBuyAction(users, date, dealAction, deal));
 
             //------------------------------------------------------------------------
 

@@ -83,6 +83,7 @@
     <Compile Include="Context and Utility\DateTimeWrapper.cs" />
     <Compile Include="Context and Utility\DealEntry.cs" />
     <Compile Include="Context and Utility\DealPicker.cs" />
+    <Compile Include="Context and Utility\DealWrapper.cs" />
     <Compile Include="Context and Utility\StoreEntry.cs" />
     <Compile Include="Context and Utility\UserEntry.cs" />
     <Compile Include="Program.cs" />

@@ -11,17 +11,17 @@ namespace TAPBot
         private LinkedList<UserEntry> pendingPurchases;
 
         // this should be a reference to the dealEntry in BuyDealAction
-        private DealEntry dealEntry;
+        private DealWrapper dealEntry;
 
         private DateTimeWrapper currentDealDate;
         private DailyDealAction dailyDealAction;
 
         protected BuyDealAction() {}
-        public BuyDealAction(LinkedList<UserEntry> pendingPurchases, DateTimeWrapper date, DailyDealAction dailyDealAction)
+        public BuyDealAction(LinkedList<UserEntry> pendingPurchases, DateTimeWrapper date, DailyDealAction dailyDealAction, DealWrapper dealEntry)
         {
             this.pendingPurchases = pendingPurchases;
             this.dailyDealAction = dailyDealAction;
-            dealEntry = dailyDealAction.Deal;
+            this.dealEntry = dealEntry;
             currentDealDate = date;
         }
 
@@ -33,7 +33,7 @@ namespace TAPBot
                 currentDealDate.Date = DateTime.Today;
             }
 
-            dealEntry = dailyDealAction.Deal;
+            dealEntry.Deal = dailyDealAction.Deal;
 
             UserEntry buyer = CoopShopUtility.GetUserEntry(botContext);
 

@@ -12,18 +12,18 @@ namespace TAPBot
         private LinkedList<UserEntry> pendingPurchases;
 
         // this should be a reference to the dealEntry in BuyDealAction
-        private DealEntry dealEntry;
+        private DealWrapper dealEntry;
 
         private DateTimeWrapper currentDealDate;
         private DailyDealAction dailyDealAction;
 
         protected ConfirmBuyAction() {}
-        public ConfirmBuyAction(LinkedList<UserEntry> pendingPurchases, DateTimeWrapper date, DailyDealAction dailyDealAction)
+        public ConfirmBuyAction(LinkedList<UserEntry> pendingPurchases, DateTimeWrapper date, DailyDealAction dailyDealAction, DealWrapper dealEntry)
         {
             this.pendingPurchases = pendingPurchases;
             currentDealDate = date;
             this.dailyDealAction = dailyDealAction;
-            dealEntry = dailyDealAction.Deal;
+            this.dealEntry = dealEntry;
         }
 
         protected override string ProduceChatMessage(BotContext botContext)
@@ -32,7 +32,7 @@ namespace TAPBot
             {
                 pendingPurchases.Clear();
                 currentDealDate.Date = DateTime.Today;
-                dealEntry = dailyDealAction.Deal;
+                dealEntry.Deal = dailyDealAction.Deal;
             }
 
             UserEntry buyer = CoopShopUtility.GetUserEntry(botContext);
@@ -60,7 +60,7 @@ namespace TAPBot
                     {
                         pendingPurchases.Clear();
                         dailyDealAction.Reroll();
-                        dealEntry = dailyDealAction.Deal;
+                        dealEntry.Deal = dailyDealAction.Deal;
                     }
                     else
                     {
