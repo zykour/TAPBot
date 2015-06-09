@@ -17,7 +17,7 @@ namespace TAPBot
 
         // Holds the today's deal
 
-        protected DealEntry dealEntry;
+        protected DealWrapper dealEntry;
         public DealEntry Deal
         {
             get 
@@ -31,18 +31,19 @@ namespace TAPBot
                     ProduceChatMessage(null);
                 }
 
-                return dealEntry; 
+                return dealEntry.Deal; 
             }
         }
 
         protected DailyDealAction() { }
-        public DailyDealAction(DealPicker dealPicker) 
+        public DailyDealAction(DealPicker dealPicker, DealWrapper dealEntry) 
         {
             hasRanToday = false;
             currentDate = DateTime.Today;
             reroll = 1;
             dealMessage = "";
             this.dealPicker = dealPicker;
+            this.dealEntry = dealEntry;
         }
 
 
@@ -60,18 +61,9 @@ namespace TAPBot
 
                 currentDate = DateTime.Today;
                 hasRanToday = true;
-                dealEntry = dealPicker.PickDeal(new Random(day), reroll);
+                dealEntry.Deal = dealPicker.PickDeal(new Random(day), reroll);
 
-                string fixedQuantity = (dealEntry.Quantity == 1) ? " copy remains." : " copies remain.";
-                string fixedPrice = (dealEntry.Price == 1) ? " point (" : " points (";
-
-                //results = "The Co-op Shop Special of the Day is \"" + gameName + ".\" The discounted price is " + gamePrice + fixedPrice + discountAmnt + "%), currently " + gameQuantity + fixedQuantity;
-                dealMessage = "Daily deal: '" + dealEntry.Name + "' for " + dealEntry.Price + fixedPrice + dealEntry.DiscountAmount + "%), currently " + dealEntry.Quantity + fixedQuantity;
-
-                if (dealEntry.AppID.CompareTo("") != 0)
-                {
-                    dealMessage = dealMessage + " " + dealEntry.AppID;
-                }
+                ComputeMessage();
             }
 
             return dealMessage;
@@ -101,6 +93,20 @@ namespace TAPBot
         {
             reroll = 1;
             hasRanToday = false;
+        }
+
+        public void ComputeMessage()
+        {
+            string correctedQuantityString = (dealEntry.Quantity == 1) ? " copy remains." : " copies remain.";
+            string correctedPriceString = (dealEntry.Price == 1) ? " point (" : " points (";
+
+            //results = "The Co-op Shop Special of the Day is \"" + gameName + ".\" The discounted price is " + gamePrice + fixedPrice + discountAmnt + "%), currently " + gameQuantity + fixedQuantity;
+            dealMessage = "Daily deal: '" + dealEntry.Name + "' for " + dealEntry.Price + correctedPriceString + dealEntry.DiscountAmount + "%), currently " + dealEntry.Quantity + correctedQuantityString;
+
+            if (dealEntry.AppID.CompareTo("") != 0)
+            {
+                dealMessage = dealMessage + " " + dealEntry.AppID;
+            }
         }
 
     }

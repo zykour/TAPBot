@@ -65,6 +65,7 @@ namespace TAPBot
                     else
                     {
                         dealEntry.Quantity = dealEntry.Quantity - 1;
+                        dailyDealAction.ComputeMessage();
                     }
 
                     botContext.SteamFriend.SendChatMessage(new SteamID(Convert.ToUInt64("76561198030277114")), EChatEntryType.ChatMsg, chatMessage);
