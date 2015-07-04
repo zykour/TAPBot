@@ -61,6 +61,12 @@ namespace TAPBot
                 return true;
             }
 
+            if (chatInput.CompareTo("!tag") == 0 ||
+                chatInput.CompareTo("/tag") == 0)
+            {
+                return true;
+            }
+
             return false;
         }
 
@@ -112,6 +118,12 @@ namespace TAPBot
                 botContext.Command.CompareTo("/sale") == 0)
             {
                 return "Co-op Shop sales: http://steamcommunity.com/groups/TAP_Gaming/discussions/3/618458030693142262/#c618458030693142805";
+            }
+
+            if (botContext.Command.CompareTo("!tag") == 0 ||
+                botContext.Command.CompareTo("/tag") == 0)
+            {
+                return "The After Games forums: http://steamcommunity.com/groups/TAP_Gaming/discussions/9/";
             }
 
             return "";
