@@ -67,6 +67,7 @@
     <Compile Include="BotAction\BuyDealAction.cs" />
     <Compile Include="BotAction\ConfirmBuyAction.cs" />
     <Compile Include="BotAction\DailyDealAction.cs" />
+    <Compile Include="BotAction\DirectoryAction.cs" />
     <Compile Include="BotAction\JoinAction.cs" />
     <Compile Include="BotAction\MilkshakeAction.cs" />
     <Compile Include="BotAction\ParseAppIDAction.cs" />

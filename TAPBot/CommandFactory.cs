@@ -108,13 +108,20 @@ namespace TAPBot
             // simple action to join a specified chatroom by it's steamcommunity URL
 
             actions.Add(new JoinAction());
+
+            //------------------------------------------------------------------------
+
+            // simple action to post directory URLs to help easily navigate users to certain pages
+
+            actions.Add(new DirectoryAction());
+
         }
        
         public void ParseChatText(BotContext botContext)
         {
             foreach (BotAction action in actions)
             {
-                if (action.IsValidCommand(botContext.Command.Trim()))
+                if (action.IsValidCommand(botContext.Command.Trim().ToLower()))
                 {
                     action.Execute(botContext);
                     break;
