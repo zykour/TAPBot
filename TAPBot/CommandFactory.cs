@@ -56,7 +56,8 @@ namespace TAPBot
             // creates a daily deal for this day
             // Specific to The After Party steam group
 
-            DailyDealAction dealAction = new DailyDealAction(dealPicker);
+            DealWrapper deal = new DealWrapper(dealPicker.PickDeal(new Random(Convert.ToInt32((DateTime.Today - new DateTime(2010, 1, 1)).TotalDays)), 1));
+            DailyDealAction dealAction = new DailyDealAction(dealPicker, deal);
             actions.Add(dealAction);
 
             //------------------------------------------------------------------------
@@ -83,7 +84,6 @@ namespace TAPBot
 
             LinkedList<UserEntry> users = new LinkedList<UserEntry>();
             DateTimeWrapper date = new DateTimeWrapper();
-            DealWrapper deal = new DealWrapper(dealAction.Deal);
 
             actions.Add(new BuyDealAction(users, date, dealAction, deal));
             actions.Add(new ConfirmBuyAction(users, date, dealAction, deal));
@@ -114,13 +114,19 @@ namespace TAPBot
             // report the player of the week of the TAP group
 
             actions.Add(new POTWAction());
+
+            //------------------------------------------------------------------------
+
+            // simple action to post directory URLs to help easily navigate users to certain pages
+
+            actions.Add(new DirectoryAction());
         }
        
         public void ParseChatText(BotContext botContext)
         {
             foreach (BotAction action in actions)
             {
-                if (action.IsValidCommand(botContext.Command.Trim()))
+                if (action.IsValidCommand(botContext.Command.Trim().ToLower()))
                 {
                     action.Execute(botContext);
                     break;

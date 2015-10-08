@@ -75,7 +75,7 @@ namespace TAPBot
 
             foreach (DealEntry deal in spunDeals)
             {
-                string tempStr = deal.Quantity + "\t" + deal.Price + " (" + deal.DiscountAmount + "%)\t" + deal.Name + ((deal.AppID == "") ? "" : "\t" + deal.AppID) + "\n";
+                string tempStr = deal.Quantity + "\t" + deal.Price + " (" + deal.DiscountAmount + "%)" + ((deal.Price < 10) ? "\t\t" : "\t") + deal.Name + "\n";
 
                 if (tempStr.Length + outputBuffer.Length > 2048)
                 {
