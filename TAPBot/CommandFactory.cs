@@ -108,6 +108,12 @@ namespace TAPBot
             // simple action to join a specified chatroom by it's steamcommunity URL
 
             actions.Add(new JoinAction());
+
+            //------------------------------------------------------------------------
+
+            // report the player of the week of the TAP group
+
+            actions.Add(new POTWAction());
         }
        
         public void ParseChatText(BotContext botContext)

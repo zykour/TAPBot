@@ -70,6 +70,7 @@
     <Compile Include="BotAction\JoinAction.cs" />
     <Compile Include="BotAction\MilkshakeAction.cs" />
     <Compile Include="BotAction\ParseAppIDAction.cs" />
+    <Compile Include="BotAction\POTWAction.cs" />
     <Compile Include="BotAction\QueenBotAction.cs" />
     <Compile Include="BotAction\RerollAction.cs" />
     <Compile Include="BotAction\ResetAction.cs" />
