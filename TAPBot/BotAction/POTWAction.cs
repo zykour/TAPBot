@@ -11,15 +11,29 @@ namespace TAPBot
 {
     class POTWAction : BotAction
     {
+        protected DateTime currentDate;
+        protected string message;
 
         protected override string ProduceChatMessage(BotContext botContext)
         {
-            if (botContext.GroupID.ToString().CompareTo("103582791434637703") != 0)
+            if (botContext.GroupID.ConvertToUInt64().ToString().CompareTo("110338190875693447") != 0)
             {
                 return "";
             }
 
-            string groupWebsite = new WebClient().DownloadString("http://steamcommunity.com/groups/Tap_gaming");
+            //if (currentDate.Date.CompareTo(DateTime.Today.Date) != 0 || String.IsNullOrEmpty(message))
+            //{
+                GetPOTW(botContext);
+            //}
+
+            return message;
+        }
+        
+        protected void GetPOTW(BotContext botContext)
+        {
+            currentDate = DateTime.Today;
+
+            string groupWebsite = new WebClient().DownloadString("http://steamcommunity.com/groups/Tap_gaming");    
             int position = groupWebsite.IndexOf("Group Player of the Week");
 
             Regex playerRegex = new Regex(@".*(a href="")(http://steamcommunity\.com/id/.*)("").*");
@@ -27,17 +41,19 @@ namespace TAPBot
             
             if (htmlMatch.Success)
             {
-                string playerWebsite = new WebClient().DownloadString(htmlMatch.Groups[1].Value);
+                WebClient webClient = new WebClient();
+                webClient.Encoding = Encoding.UTF8;
+                string playerWebsite = webClient.DownloadString(htmlMatch.Groups[2].Value);
                 Regex nameRegex = new Regex(@".*(<title>Steam Community :: )(.*)(</title>)");
                 Match nameMatch = nameRegex.Match(playerWebsite);
 
                 if (nameMatch.Success)
                 {
-                    return nameMatch.Groups[1].Value;
+                    message = "The princess of the week is " + nameMatch.Groups[2].Value;
                 }
             }
 
-            return "";
+            return;
         }
 
         public override bool IsValidCommand(string chatInput)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.IO;
 
 using SteamKit2;
 
@@ -17,6 +18,7 @@ namespace TAPBot
         static string username, password;
         static CallbackManager callbackManager;
         static SteamFriends steamFriends;
+        static string authCode, twoFactorAuth;
 
         static void Main(string[] args)
         {
@@ -57,6 +59,9 @@ namespace TAPBot
             new Callback<SteamUser.LoggedOffCallback>(OnLoggedOff, callbackManager);
             new Callback<SteamUser.AccountInfoCallback>(OnAccountInfo, callbackManager);
 
+            // this callback is triggered when the steam servers wish for the client to store the sentry file
+            new Callback<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth, callbackManager);
+
             new Callback<SteamFriends.ChatInviteCallback>(OnChatInvite, callbackManager);
             new Callback<SteamFriends.ChatMsgCallback>(OnChatMsg, callbackManager);
             new Callback<SteamFriends.FriendMsgCallback>(OnFriendMsg, callbackManager);
@@ -90,11 +95,33 @@ namespace TAPBot
                 steamClient.Connect();
                 return;
             }
+
             Console.WriteLine("Connected to Steam! Logging in '{0}'...", username);
+
+            byte[] sentryHash = null;
+            if (File.Exists("sentry.bin"))
+            {
+                // if we have a saved sentry file, read and sha-1 hash it
+                byte[] sentryFile = File.ReadAllBytes("sentry.bin");
+                sentryHash = CryptoHelper.SHAHash(sentryFile);
+            }
+
             steamUser.LogOn(new SteamUser.LogOnDetails
             {
                 Username = username,
                 Password = password,
+
+                // in this sample, we pass in an additional authcode
+                // this value will be null (which is the default) for our first logon attempt
+                AuthCode = authCode,
+
+                // if the account is using 2-factor auth, we'll provide the two factor code instead
+                // this will also be null on our first logon attempt
+                TwoFactorCode = twoFactorAuth,
+
+                // our subsequent logons use the hash of the sentry file as proof of ownership of the file
+                // this will also be null for our first (no authcode) and second (authcode only) logon attempts
+                SentryFileHash = sentryHash,
             });
         }
 
@@ -107,6 +134,28 @@ namespace TAPBot
 
         static void OnLoggedOn(SteamUser.LoggedOnCallback callback)
         {
+            bool isSteamGuard = callback.Result == EResult.AccountLogonDenied;
+            bool is2FA = callback.Result == EResult.AccountLogonDeniedNeedTwoFactorCode;
+
+            if (isSteamGuard || is2FA)
+            {
+                Console.WriteLine("This account is SteamGuard protected!");
+
+                if (is2FA)
+                {
+                    Console.Write("Please enter your 2 factor auth code from your authenticator app: ");
+                    twoFactorAuth = Console.ReadLine();
+                }
+                else
+                {
+                    Console.Write("Please enter the auth code sent to the email at {0}: ", callback.EmailDomain);
+                    authCode = Console.ReadLine();
+                }
+
+                return;
+            }
+
+
             if (callback.Result != EResult.OK)
             {
                 if (callback.Result == EResult.AccountLogonDenied)
@@ -166,6 +215,40 @@ namespace TAPBot
                 // use the factory to get an appropriate object correlating to the action
                 commandFactory.ParseChatText(new BotContext(null, callback.Sender, callback.Message.Trim(), steamFriends));
             }            
+        }
+
+        static void OnMachineAuth(SteamUser.UpdateMachineAuthCallback callback)
+        {
+            Console.WriteLine("Updating sentryfile...");
+
+            byte[] sentryHash = CryptoHelper.SHAHash(callback.Data);
+
+            // write out our sentry file
+            // ideally we'd want to write to the filename specified in the callback
+            // but then this sample would require more code to find the correct sentry file to read during logon
+            // for the sake of simplicity, we'll just use "sentry.bin"
+            File.WriteAllBytes("sentry.bin", callback.Data);
+
+            // inform the steam servers that we're accepting this sentry file
+            steamUser.SendMachineAuthResponse(new SteamUser.MachineAuthDetails
+            {
+                JobID = callback.JobID,
+
+                FileName = callback.FileName,
+
+                BytesWritten = callback.BytesToWrite,
+                FileSize = callback.Data.Length,
+                Offset = callback.Offset,
+
+                Result = EResult.OK,
+                LastError = 0,
+
+                OneTimePassword = callback.OneTimePassword,
+
+                SentryFileHash = sentryHash,
+            });
+
+            Console.WriteLine("Done!");
         }
     }
 }
