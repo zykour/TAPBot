@@ -120,6 +120,18 @@ namespace TAPBot
             // simple action to post directory URLs to help easily navigate users to certain pages
 
             actions.Add(new DirectoryAction());
+
+            //------------------------------------------------------------------------
+
+            // repost what the user said after the /me command as RP text
+
+            actions.Add(new MeAction());
+
+            //------------------------------------------------------------------------
+
+            // simple action to tell the user who invokes the command their 64-bit Steam ID
+
+            actions.Add(new IDAction());
         }
        
         public void ParseChatText(BotContext botContext)
