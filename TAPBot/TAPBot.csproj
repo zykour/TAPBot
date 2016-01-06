@@ -78,6 +78,7 @@
     <Compile Include="BotAction\RerollAction.cs" />
     <Compile Include="BotAction\ResetAction.cs" />
     <Compile Include="BotAction\RollAction.cs" />
+    <Compile Include="BotAction\SearchAction.cs" />
     <Compile Include="BotAction\SpinAction.cs" />
     <Compile Include="CommandFactory.cs" />
     <Compile Include="Context and Utility\BinaryTree.cs" />

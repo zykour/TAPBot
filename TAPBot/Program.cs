@@ -31,13 +31,7 @@ namespace TAPBot
                 Console.WriteLine("Password: ");
                 while (( password = Console.ReadLine() ) != null) ;
             }
-
-            // instantiate commandFactory used to create bot actions
-            // todo: rename to BotActionManager
-            // may use a state pattern in the future to support a bot with different actions depending on state
-
-            commandFactory = new CommandFactory();
-
+            
             // grab command line arguments for logging into the bot's steam account
 
             username = args[0];
@@ -49,6 +43,12 @@ namespace TAPBot
             steamUser = steamClient.GetHandler<SteamUser>();
             callbackManager = new CallbackManager(steamClient);
             steamFriends = steamClient.GetHandler<SteamFriends>();
+
+            // instantiate commandFactory used to create bot actions
+            // todo: rename to BotActionManager
+            // may use a state pattern in the future to support a bot with different actions depending on state
+
+            commandFactory = new CommandFactory(steamFriends);
 
             // register callbacks we are interested in
 

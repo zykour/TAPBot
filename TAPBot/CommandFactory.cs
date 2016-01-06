@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using SteamKit2;
 
 namespace TAPBot
 {
@@ -12,9 +13,17 @@ namespace TAPBot
 
     class CommandFactory
     {
-        List<BotAction> actions;
+        private List<BotAction> actions;
+        private SteamFriends steamFriends;
 
-        public CommandFactory()
+        public CommandFactory(SteamFriends steamFriends)
+        {
+            this.steamFriends = steamFriends;
+            actions = new List<BotAction>();
+            Initialize();
+        }
+
+        protected CommandFactory()
         {
             actions = new List<BotAction>();
             Initialize();
@@ -132,6 +141,12 @@ namespace TAPBot
             // simple action to tell the user who invokes the command their 64-bit Steam ID
 
             actions.Add(new IDAction());
+
+            //------------------------------------------------------------------------
+
+            // simple action to tell the user who invokes the command their 64-bit Steam ID
+
+            actions.Add(new SearchAction());
         }
        
         public void ParseChatText(BotContext botContext)
@@ -141,7 +156,7 @@ namespace TAPBot
                 if (action.IsValidCommand(botContext.Command.Trim().ToLower()))
                 {
                     action.Execute(botContext);
-                    break;
+                    //break;
                 }
             }
         }
