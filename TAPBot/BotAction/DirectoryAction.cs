@@ -70,28 +70,26 @@ namespace TAPBot
             return false;
         }
 
-        protected override BotContext ProduceOutgoingMessage(BotContext botContext)
+        protected override string ProduceChatMessage(BotContext botContext)
         {
-            string output = String.Empty;
-
             if (botContext.Command.CompareTo("!directory") == 0 ||
                 botContext.Command.CompareTo("/directory") == 0 ||
                 botContext.Command.CompareTo("!overview") == 0 ||
                 botContext.Command.CompareTo("/overview") == 0)
             {
-                output = "Group overview: http://steamcommunity.com/groups/TAP_Gaming";
+                return "Group overview: http://steamcommunity.com/groups/TAP_Gaming";
             }
 
             if (botContext.Command.CompareTo("!events") == 0 ||
                 botContext.Command.CompareTo("/events") == 0)
             {
-                output = "Group events: http://steamcommunity.com/groups/TAP_Gaming#events";
+                return "Group events: http://steamcommunity.com/groups/TAP_Gaming#events";
             }
 
             if (botContext.Command.CompareTo("!coopshop") == 0 ||
                 botContext.Command.CompareTo("/coopshop") == 0)
             {
-                output = "The Co-op Shop: http://steamcommunity.com/groups/TAP_Gaming/discussions/3/618458030693142262/";
+                return "The Co-op Shop: http://steamcommunity.com/groups/TAP_Gaming/discussions/3/618458030693142262/";
             }
 
             if (botContext.Command.CompareTo("!forums") == 0 ||
@@ -99,19 +97,19 @@ namespace TAPBot
                 botContext.Command.CompareTo("!discussions") == 0 ||
                 botContext.Command.CompareTo("/discussions") == 0)
             {
-                output = "Group forums: http://steamcommunity.com/groups/TAP_Gaming/discussions";
+                return "Group forums: http://steamcommunity.com/groups/TAP_Gaming/discussions";
             }
 
             if (botContext.Command.CompareTo("!balances") == 0 ||
                 botContext.Command.CompareTo("/balances") == 0)
             {
-                output = "User balances: http://steamcommunity.com/groups/TAP_Gaming/discussions/3/618458030693142262/#c618458030693142415";
+                return "User balances: http://steamcommunity.com/groups/TAP_Gaming/discussions/3/618458030693142262/#c618458030693142415";
             }
 
             if (botContext.Command.CompareTo("!inventory") == 0 ||
                 botContext.Command.CompareTo("/inventory") == 0)
             {
-                output = "Co-op Shop inventory: http://steamcommunity.com/groups/TAP_Gaming/discussions/3/618458030693142262/#c618458030693142528";
+                return "Co-op Shop inventory: http://steamcommunity.com/groups/TAP_Gaming/discussions/3/618458030693142262/#c618458030693142528";
             }
 
             if (botContext.Command.CompareTo("!sales") == 0 ||
@@ -119,19 +117,16 @@ namespace TAPBot
                 botContext.Command.CompareTo("!sale") == 0 ||
                 botContext.Command.CompareTo("/sale") == 0)
             {
-                output = "Co-op Shop sales: http://steamcommunity.com/groups/TAP_Gaming/discussions/3/618458030693142262/#c618458030693142805";
+                return "Co-op Shop sales: http://steamcommunity.com/groups/TAP_Gaming/discussions/3/618458030693142262/#c618458030693142805";
             }
 
             if (botContext.Command.CompareTo("!tag") == 0 ||
                 botContext.Command.CompareTo("/tag") == 0)
             {
-                output = "The After Games forums: http://steamcommunity.com/groups/TAP_Gaming/discussions/9/";
+                return "The After Games forums: http://steamcommunity.com/groups/TAP_Gaming/discussions/9/";
             }
 
-            BotContext outgoingContext = botContext.Clone();
-            outgoingContext.OutgoingMessage = output;
-
-            return outgoingContext;
+            return "";
         }
     }
 }

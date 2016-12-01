@@ -9,9 +9,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TAPBot</RootNamespace>
     <AssemblyName>TAPBot</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,44 +32,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\Visual Studio 2015\Projects\TheAfterParty\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="DropboxRestAPI">
+      <HintPath>..\packages\DropboxRestAPI.1.0.2\lib\net45\DropboxRestAPI.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\Visual Studio 2015\Projects\TheAfterParty\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\Visual Studio 2015\Projects\TheAfterParty\packages\Microsoft.AspNet.Identity.Core.2.0.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\Visual Studio 2015\Projects\TheAfterParty\packages\Microsoft.AspNet.Identity.EntityFramework.2.0.0\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\Visual Studio 2015\Projects\TheAfterParty\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\Visual Studio 2015\Projects\TheAfterParty\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\Visual Studio 2015\Projects\TheAfterParty\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DropboxRestAPI.1.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="protobuf-net">
       <HintPath>..\packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
-    <Reference Include="SteamKit2, Version=1.8.0.26737, Culture=neutral, PublicKeyToken=ed3ce47ed5aad940, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\Visual Studio 2015\Projects\TheAfterParty\packages\SteamKit2.1.8.0\lib\net45\SteamKit2.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="SteamKit2">
+      <HintPath>..\packages\SteamKit2.1.6.2\lib\net40\SteamKit2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Extensions">
@@ -87,48 +62,44 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BotAction\ApiActions\AddBalancesAction.cs" />
-    <Compile Include="BotAction\ApiActions\AddBalancesObjectiveAction.cs" />
-    <Compile Include="BotAction\ApiActions\AddSiteNotificationAction.cs" />
-    <Compile Include="BotAction\ApiActions\BalanceAction.cs" />
-    <Compile Include="BotAction\ApiActions\BoostedAction.cs" />
-    <Compile Include="BotAction\ApiActions\BuyDealAction.cs" />
-    <Compile Include="BotAction\ApiActions\BuyGameAction.cs" />
-    <Compile Include="BotAction\ApiActions\ConfirmAction.cs" />
-    <Compile Include="BotAction\ApiActions\DealAction.cs" />
-    <Compile Include="BotAction\ApiActions\OtherDealAction.cs" />
-    <Compile Include="BotAction\ApiActions\OwnsAction.cs" />
-    <Compile Include="BotAction\ApiActions\ParseAppIDAction.cs" />
-    <Compile Include="BotAction\ApiActions\PrincessAction.cs" />
-    <Compile Include="BotAction\ApiActions\QueenAction.cs" />
-    <Compile Include="BotAction\ApiActions\RerollAction.cs" />
-    <Compile Include="BotAction\ApiActions\SearchAction.cs" />
-    <Compile Include="BotAction\ApiActions\SearchObjectiveAction.cs" />
-    <Compile Include="BotAction\ApiActions\SetPOTWAction.cs" />
-    <Compile Include="BotAction\ApiActions\ToggleActiveAction.cs" />
-    <Compile Include="BotAction\ApiActions\TransferAction.cs" />
-    <Compile Include="BotAction\ApiActions\WeeklyAction.cs" />
+    <Compile Include="BotAction\BalanceBotAction.cs" />
     <Compile Include="BotAction\BotAction.cs" />
-    <Compile Include="BotAction\IndependentActions\DirectoryAction.cs" />
-    <Compile Include="BotAction\IndependentActions\IDAction.cs" />
-    <Compile Include="BotAction\IndependentActions\RollAction.cs" />
+    <Compile Include="BotAction\BuyDealAction.cs" />
+    <Compile Include="BotAction\ConfirmBuyAction.cs" />
+    <Compile Include="BotAction\DailyDealAction.cs" />
+    <Compile Include="BotAction\DirectoryAction.cs" />
+    <Compile Include="BotAction\IDAction.cs" />
+    <Compile Include="BotAction\JoinAction.cs" />
+    <Compile Include="BotAction\MeAction.cs" />
+    <Compile Include="BotAction\MilkshakeAction.cs" />
+    <Compile Include="BotAction\ParseAppIDAction.cs" />
+    <Compile Include="BotAction\POTWAction.cs" />
+    <Compile Include="BotAction\QueenBotAction.cs" />
+    <Compile Include="BotAction\RerollAction.cs" />
+    <Compile Include="BotAction\ResetAction.cs" />
+    <Compile Include="BotAction\RollAction.cs" />
+    <Compile Include="BotAction\SearchAction.cs" />
+    <Compile Include="BotAction\SpinAction.cs" />
     <Compile Include="CommandFactory.cs" />
-    <Compile Include="Context and Utility\ApiAuthorizer.cs" />
+    <Compile Include="Context and Utility\BinaryTree.cs" />
+    <Compile Include="Context and Utility\BinaryTreeNode.cs" />
     <Compile Include="Context and Utility\BotContext.cs" />
-    <Compile Include="Context and Utility\BuyEntry.cs" />
+    <Compile Include="Context and Utility\CoopShopUtility.cs" />
+    <Compile Include="Context and Utility\DateTimeWrapper.cs" />
+    <Compile Include="Context and Utility\DealEntry.cs" />
+    <Compile Include="Context and Utility\DealPicker.cs" />
+    <Compile Include="Context and Utility\DealWrapper.cs" />
+    <Compile Include="Context and Utility\StoreEntry.cs" />
+    <Compile Include="Context and Utility\UserEntry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SteamBotManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Visual Studio 2015\Projects\TheAfterParty\TheAfterParty.Domain\TheAfterParty.Domain.csproj">
-      <Project>{d187cca9-7f4e-41c9-b698-487ff6d7d35e}</Project>
-      <Name>TheAfterParty.Domain</Name>
-    </ProjectReference>
+    <Folder Include="BotAction\CommunityBotAction\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
