@@ -12,7 +12,7 @@ namespace TAPBot
     class RollAction : BotAction
     {
 
-        protected override string ProduceChatMessage(BotContext botContext)
+        protected override BotContext ProduceOutgoingMessage(BotContext botContext)
         {
             Regex rollFormat = new Regex(@"[!/](roll )([0-9]+)\-([0-9]+)");
         
@@ -52,7 +52,10 @@ namespace TAPBot
             Random rg = new Random();
             int randomNum = rg.Next(lower, upper + 1);
 
-            return "rolled a " + randomNum;
+            BotContext outgoingContext = botContext.Clone();
+            outgoingContext.OutgoingMessage = "rolled a " + randomNum;
+
+            return outgoingContext;
         }
 
         public override bool IsValidCommand(string chatInput)

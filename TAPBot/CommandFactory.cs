@@ -5,148 +5,199 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using SteamKit2;
+using TAPBot.Context_and_Utility;
+using System.Configuration;
+using System.Collections.Specialized;
+using TheAfterParty.Domain.Services;
+using TheAfterParty.Domain.Concrete;
 
 namespace TAPBot
 {
 
     // A factory class to return the appropriate BotAction object based on the parsed chat command, if any
 
-    class CommandFactory
+    public class CommandFactory
     {
         private List<BotAction> actions;
         private SteamFriends steamFriends;
+        private ApiAuthorizer ApiAuthorizer { get; set; }
 
-        public CommandFactory(SteamFriends steamFriends)
+        public CommandFactory(SteamFriends steamFriends, ApiAuthorizer apiAuthorizer) : this()
         {
             this.steamFriends = steamFriends;
-            actions = new List<BotAction>();
-            Initialize();
+            this.ApiAuthorizer = apiAuthorizer;
         }
-
         protected CommandFactory()
         {
             actions = new List<BotAction>();
-            Initialize();
+        }
+
+        private static ApiService CreateApiService()
+        {
+            AppIdentityDbContext context = AppIdentityDbContext.Create();
+            UnitOfWork unitOfWork = new UnitOfWork(context);
+            UserRepository userRepository = new UserRepository(unitOfWork);
+            ListingRepository listingRepository = new ListingRepository(unitOfWork);
+            AuctionRepository auctionRepository = new AuctionRepository(unitOfWork);
+            ObjectiveRepository objectiveRepository = new ObjectiveRepository(unitOfWork);
+            SiteRepository siteRepository = new SiteRepository(unitOfWork);
+
+            return new ApiService(auctionRepository, userRepository, listingRepository, objectiveRepository, siteRepository, unitOfWork);
+        }
+
+        private void AddAction(BotAction action)
+        {
+            action.ApiAuthorizer = this.ApiAuthorizer;
+            actions.Add(action);
         }
 
         public void Initialize()
         {
-            DealPicker dealPicker = new DealPicker();
+            string admins = ConfigurationManager.AppSettings.Get("Admins");
+            List<String> adminList = admins.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            string mods = ConfigurationManager.AppSettings.Get("Admins");
+            List<String> modList = mods.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+
+            //------------------------------------------------------------------------
+
+            // allows one user to transfer points to another
+
+            AddAction(new AddBalancesObjectiveAction(CreateApiService, adminList));
+            
+            //------------------------------------------------------------------------
+
+            // allows one user to transfer points to another
+
+            AddAction(new AddBalancesAction(CreateApiService, adminList));
+
+            //------------------------------------------------------------------------
+
+            // allows one user to transfer points to another
+
+            AddAction(new ToggleActiveAction(CreateApiService, adminList));
+
+            //------------------------------------------------------------------------
+
+            // allows one user to transfer points to another
+
+            AddAction(new AddSiteNotificationAction(CreateApiService, modList));
+
+            //------------------------------------------------------------------------
+
+            // allows one user to transfer points to another
+
+            AddAction(new OwnsAction(CreateApiService));
+
+            //------------------------------------------------------------------------
+
+            // allows one user to transfer points to another
+
+            AddAction(new SetPOTWAction(CreateApiService, modList));
+
+            //------------------------------------------------------------------------
+
+            // allows one user to transfer points to another
+
+            AddAction(new TransferAction(CreateApiService));
 
             //------------------------------------------------------------------------
 
             // finds the balance (co-op shop points) of the invoker
             // Specific to The After Party steam group
 
-            actions.Add(new BalanceBotAction());
+            AddAction(new BalanceAction(CreateApiService));
+
+            //------------------------------------------------------------------------
+
+            // finds the balance (co-op shop points) of the invoker
+            // Specific to The After Party steam group
+
+            AddAction(new BoostedAction(CreateApiService));
 
             //------------------------------------------------------------------------
 
             // determines which member has the most co-op shop points.
             // Specific to The After Party steam group
 
-            actions.Add(new QueenBotAction());
+            AddAction(new QueenAction(CreateApiService));
 
             //------------------------------------------------------------------------
 
             // rolls a number between the specified values, or if no values are specified it rolls a random number between 1-100
 
-            actions.Add(new RollAction());
+            AddAction(new RollAction());
 
             //------------------------------------------------------------------------
 
-            // a trivial action to count how many times !milkshakes has been invoked
-            // no real purpose
+            // queries the TAP website for the daily deal
 
-            actions.Add(new MilkshakeAction());
+            AddAction(new DealAction(CreateApiService));
 
             //------------------------------------------------------------------------
 
-            // creates a daily deal for this day
+            // queries the TAP website for the daily deal
+
+            AddAction(new WeeklyAction(CreateApiService));
+
+            //------------------------------------------------------------------------
+
+            // queries the TAP website for the daily deal
+
+            AddAction(new OtherDealAction(CreateApiService));
+
+            //------------------------------------------------------------------------
+
+            // a command to force the server to pick a new deal
             // Specific to The After Party steam group
 
-            DealWrapper deal = new DealWrapper(dealPicker.PickDeal(new Random(Convert.ToInt32((DateTime.Today - new DateTime(2010, 1, 1)).TotalDays)), 1));
-            DailyDealAction dealAction = new DailyDealAction(dealPicker, deal);
-            actions.Add(dealAction);
+            AddAction(new RerollAction(CreateApiService, adminList));
 
             //------------------------------------------------------------------------
 
-            // if the current deal is bought, there is need to reroll the deal to get a new random deal
-            // otherwise it uses the same seed (a value procurred via today's date times a reroll factor)
-            // and will just pick the next item on the list after the purchased item is removed
-            // Specific to The After Party steam group
+            // functions for buying the daily deal, buy games by ID, and confirming these purchases
 
-            actions.Add(new RerollAction(dealAction));
+            List<BuyEntry> buyEntries = new List<BuyEntry>();
 
-            //------------------------------------------------------------------------
-
-            // resets the reroll counter in the dailyDealAction 
-            // only successfully executes if Monukai invokes it personally
-            // Specific to The After Party steam group
-
-            actions.Add(new ResetAction(dealAction));
-
-            //------------------------------------------------------------------------
-
-            // The buy deal action gives users a chance to reserve the current deal
-            // It is complemented by a confirm action that confirms their purchase
-
-            LinkedList<UserEntry> users = new LinkedList<UserEntry>();
-            DateTimeWrapper date = new DateTimeWrapper();
-
-            actions.Add(new BuyDealAction(users, date, dealAction, deal));
-            actions.Add(new ConfirmBuyAction(users, date, dealAction, deal));
-
-            //------------------------------------------------------------------------
-
-            // The spin action "spins" a number of deals equal to the number specified in the command
-            // -- uses current datetime to seed randomness
-            // Specific to The After Party steam group
-
-            actions.Add(new SpinAction(dealPicker));
+            AddAction(new BuyDealAction(CreateApiService, buyEntries));
+            AddAction(new ConfirmAction(CreateApiService, buyEntries));
+            AddAction(new BuyGameAction(CreateApiService, buyEntries));
 
             //------------------------------------------------------------------------
 
             // parses steamApp links to see if the specified game/app is in the co-op shop
             // Specific to The After Party steam group
 
-            actions.Add(new ParseAppIDAction());
-
-            //------------------------------------------------------------------------
-
-            // simple action to join a specified chatroom by it's steamcommunity URL
-
-            actions.Add(new JoinAction());
+            AddAction(new ParseAppIDAction(CreateApiService));
 
             //------------------------------------------------------------------------
 
             // report the player of the week of the TAP group
 
-            actions.Add(new POTWAction());
+            AddAction(new PrincessAction(CreateApiService));
 
             //------------------------------------------------------------------------
 
             // simple action to post directory URLs to help easily navigate users to certain pages
 
-            actions.Add(new DirectoryAction());
-
-            //------------------------------------------------------------------------
-
-            // repost what the user said after the /me command as RP text
-
-            actions.Add(new MeAction());
+            AddAction(new DirectoryAction());
 
             //------------------------------------------------------------------------
 
             // simple action to tell the user who invokes the command their 64-bit Steam ID
 
-            actions.Add(new IDAction());
+            AddAction(new IDAction());
 
             //------------------------------------------------------------------------
 
-            // simple action to tell the user who invokes the command their 64-bit Steam ID
+            // simple action to search the store by item name
 
-            actions.Add(new SearchAction());
+            AddAction(new SearchAction(CreateApiService));
+
+            //------------------------------------------------------------------------
+
+            // simple action to search objectives by title or name text
+
+            AddAction(new SearchObjectiveAction(CreateApiService));
         }
        
         public void ParseChatText(BotContext botContext)

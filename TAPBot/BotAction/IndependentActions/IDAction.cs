@@ -24,9 +24,12 @@ namespace TAPBot
             return false;
         }
 
-        protected override string ProduceChatMessage(BotContext botContext)
+        protected override BotContext ProduceOutgoingMessage(BotContext botContext)
         {
-            return "Your 64-bit SteamID is: " + botContext.FriendID.ConvertToUInt64().ToString();
+            BotContext outgoingContext = botContext.Clone();
+            outgoingContext.OutgoingMessage = "Your 64-bit SteamID is: " + botContext.FriendID.ConvertToUInt64().ToString();
+
+            return outgoingContext;
         }
     }
 }
